@@ -13,7 +13,10 @@
 @media(max-width:700px){.ledger-shell{max-height:70vh}.sync-indicator{order:3;flex-basis:100%;justify-content:center}.ledger-table{min-width:1000px}}
 
 /* Account authentication gate. Never show locally cached finance data before a Drive file is selected. */
-.auth-gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(10,30,49,.88);backdrop-filter:blur(6px)}
+.auth-gate{position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(10,30,49,.88);backdrop-filter:blur(6px)}
+/* Google Drive Picker is injected into <body>. It must stack above the connection gate. */
+.picker-dialog-bg{z-index:20000!important}
+.picker-dialog{z-index:20001!important}
 .auth-card{background:#fff;color:#163047;max-width:620px;width:100%;max-height:92vh;overflow:auto;border-radius:18px;padding:30px;box-shadow:0 20px 75px #0005}
 .auth-card h2{margin:0 0 10px;font-size:26px}.auth-card p{color:#496277;line-height:1.55}
 .auth-card .auth-actions{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0}.auth-card .auth-status{background:#eff5fa;border-radius:8px;padding:12px;font-weight:700;white-space:pre-wrap;overflow-wrap:anywhere}
