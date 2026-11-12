@@ -15,7 +15,23 @@
 
 .sync-indicator{display:inline-flex;align-items:center;gap:6px;border:1px solid #c8d9e4;padding:9px 11px;border-radius:9px;background:#fff;font-size:12px;font-weight:800;color:#516c83}
 .sync-indicator.good{color:#11764e;border-color:#a7d9bd;background:#e8f9f0}.sync-indicator.working{color:#7a5704;border-color:#e5d49a;background:#fff8e2}.sync-indicator.error{color:#ad303a;border-color:#efb9bf;background:#fff0f2}
-.ledger-shell{overflow:auto;max-height:68vh;border:1px solid var(--line);border-radius:11px}.ledger-table{width:100%;min-width:1080px;border-collapse:separate;border-spacing:0;font-size:12px}.ledger-table th{position:sticky;top:0;background:#edf5f7;color:#36546b;text-align:left;z-index:2;padding:11px 9px;border-bottom:2px solid #d3e2e7}.ledger-table td{border-bottom:1px solid #e9eff4;padding:7px 8px;vertical-align:middle}.ledger-table tbody tr:nth-child(even){background:#f7fafc}.ledger-table tbody tr:hover{background:#e9f6f4}.ledger-table tr.paid{background:#ecf9f2}.ledger-table tr.skipped{opacity:.68}.ledger-table .compact-control{width:100%;min-width:96px;max-width:180px;padding:8px 6px;border:1px solid #cbdde6;border-radius:7px;background:white;font-size:12px}.ledger-table .date-control{min-width:124px;max-width:140px}.ledger-table .amt-control{min-width:94px;max-width:112px;text-align:right}.ledger-table .account-control{min-width:160px;max-width:230px}.ledger-table .title-cell{min-width:185px;max-width:280px;white-space:normal}.ledger-table .balance-cell{min-width:140px;font-variant-numeric:tabular-nums;text-align:right}.ledger-table .money-cell{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.ledger-table .pay-type{display:inline-block;font-size:10px;letter-spacing:.02em;font-weight:800;color:#47768b;background:#e8f1f6;border-radius:5px;padding:2px 6px;margin-top:3px}.ledger-table .pay-type.in{background:#dcf7e7;color:#167251}.ledger-table .pay-type.out{background:#fff0e8;color:#a4512a}.ledger-summary{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.ledger-summary .stat{flex:1;min-width:160px}.ledger-summary .stat strong{font-size:18px}.ledger-help{margin-bottom:10px}.ledger-note{font-size:11px;color:#536a7c;line-height:1.35;margin-top:4px}.ledger-error{color:#ad303a;font-weight:700}.sync-conflict{background:#fff0f0;border:1px solid #e9afb5;color:#7a2433;border-radius:10px;padding:13px;margin:10px 0}
+.ledger-shell{overflow:auto;max-height:68vh;border:1px solid var(--line);border-radius:11px}.ledger-table{width:100%;min-width:1080px;border-collapse:separate;border-spacing:0;font-size:12px}.ledger-table th{position:sticky;top:0;background:#edf5f7;color:#36546b;text-align:left;z-index:2;padding:11px 9px;border-bottom:2px solid #d3e2e7}.ledger-table td{border-bottom:1px solid #e9eff4;padding:7px 8px;vertical-align:middle}.ledger-table tbody tr:nth-child(even){background:#f7fafc}.ledger-table tbody tr:hover{background:#e9f6f4}.ledger-table tr.paid{background:#e9edf1;color:#637284}
+.posted-ledger{background:#f0f3f6;border:1px solid #d7dee5;border-radius:11px;margin:10px 0 14px;overflow:hidden}
+.posted-ledger summary{display:flex;gap:12px;align-items:center;flex-wrap:wrap;cursor:pointer;padding:11px 14px;list-style:none;color:#39536a;font-weight:700;user-select:none}
+.posted-ledger summary::-webkit-details-marker{display:none}
+.posted-ledger summary::before{content:"▸";font-size:15px;color:#60768a}
+.posted-ledger[open] summary::before{content:"▾"}
+.posted-ledger summary .posted-subtitle{font-size:12px;font-weight:500;color:#5e7183}
+.posted-ledger .posted-shell{border-radius:0;border-left:0;border-right:0;border-bottom:0;background:#f4f6f8;max-height:42vh}
+.posted-ledger .posted-toolbar{padding:6px 12px;display:flex;justify-content:flex-end;background:#f4f6f8}
+.posted-ledger .ledger-table{background:#eef1f4}
+.posted-ledger .ledger-table td,.posted-ledger .ledger-table tr:hover td{background:#e9edf1;color:#687585;border-color:#dbe1e7}
+.posted-ledger .ledger-table .compact-control{background:#f0f2f5;color:#465c70;border-color:#cbd4dc}
+.posted-ledger .ledger-table .compact-control:focus{background:#fff;color:#172c40}
+.posted-ledger .ledger-table .btn.primary{background:#586d80;border-color:#586d80}
+.ledger-today-marker{background:#e5f8f5!important;outline:2px solid #8ad6cd;outline-offset:-2px}
+.ledger-active-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.ledger-active-title .btn{padding:5px 9px;font-size:11px}.ledger-table tr.skipped{opacity:.68}.ledger-table .compact-control{width:100%;min-width:96px;max-width:180px;padding:8px 6px;border:1px solid #cbdde6;border-radius:7px;background:white;font-size:12px}.ledger-table .date-control{min-width:124px;max-width:140px}.ledger-table .amt-control{min-width:94px;max-width:112px;text-align:right}.ledger-table .account-control{min-width:160px;max-width:230px}.ledger-table .title-cell{min-width:185px;max-width:280px;white-space:normal}.ledger-table .balance-cell{min-width:140px;font-variant-numeric:tabular-nums;text-align:right}.ledger-table .money-cell{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.ledger-table .pay-type{display:inline-block;font-size:10px;letter-spacing:.02em;font-weight:800;color:#47768b;background:#e8f1f6;border-radius:5px;padding:2px 6px;margin-top:3px}.ledger-table .pay-type.in{background:#dcf7e7;color:#167251}.ledger-table .pay-type.out{background:#fff0e8;color:#a4512a}.ledger-summary{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.ledger-summary .stat{flex:1;min-width:160px}.ledger-summary .stat strong{font-size:18px}.ledger-help{margin-bottom:10px}.ledger-note{font-size:11px;color:#536a7c;line-height:1.35;margin-top:4px}.ledger-error{color:#ad303a;font-weight:700}.sync-conflict{background:#fff0f0;border:1px solid #e9afb5;color:#7a2433;border-radius:10px;padding:13px;margin:10px 0}
 @media(max-width:700px){.ledger-shell{max-height:70vh}.sync-indicator{order:3;flex-basis:100%;justify-content:center}.ledger-table{min-width:1000px}}
 
 /* Account authentication gate. Never show locally cached finance data before a Drive file is selected. */
@@ -562,20 +578,34 @@ function ledgerEntries(key){
  for(const t of state.transactions)if(t.date&&ym(t.date)===key){rows.push({kind:'tx',id:t.id,dueDate:t.date,source:t,eff:t,name:t.description||'One-time payment',scheduled:t.amount,actual:t.actualAmount??'',actualDate:t.actualDate||t.date,status:t.status||'Planned',from:t.from,to:t.to});}
  rows.sort((a,b)=>a.dueDate.localeCompare(b.dueDate)||a.name.localeCompare(b.name));return rows;
 }
+let postedLedgerExpanded=false,ledgerLastFocusedKey='';
+function focusLedgerToday(force=false){
+ const holder=$('ledgerActiveScroll');if(!holder)return;
+ const key=state.viewMonth+'|'+today();
+ if(!force&&ledgerLastFocusedKey===key)return;
+ ledgerLastFocusedKey=key;
+ const all=[...holder.querySelectorAll('tr[data-ledger-row]')];
+ if(!all.length){holder.scrollTop=0;return;}
+ const thisMonth=state.viewMonth===today().slice(0,7);
+ const target=thisMonth?(all.find(x=>x.dataset.date>=today())||all[all.length-1]):all[0];
+ holder.scrollTop=Math.max(0,holder.scrollTop+target.getBoundingClientRect().top-holder.getBoundingClientRect().top-40);
+ target.classList.add('ledger-today-marker');
+}
 function ledgerPage(){
  let key=state.viewMonth,rows=ledgerEntries(key),days=dayRows(key),balances=Object.fromEntries(days.map(d=>[d.date,d]));
+ const postedRows=rows.filter(x=>x.status==='Posted'),pendingRows=rows.filter(x=>x.status!=='Posted');
  let exp=0,posted=postedForMonth(key).exp,sched=0,inc=postedForMonth(key).inc;
  for(const x of rows){let type=eventType(x.eff.from,x.eff.to);if(x.status==='Posted'){}
    else if(!['Skipped','Cancelled'].includes(x.status)&&type==='expense')sched+=Number(x.scheduled);
    if(type==='expense')exp+=Number(x.scheduled);
  }
- let html=rows.map(x=>{
+ const renderLedgerRow=x=>{
   const type=eventType(x.eff.from,x.eff.to),displayAccount=x.from==='External'?x.to:x.from,a=accountOf(displayAccount),day=balances[x.status==='Posted'?x.actualDate:x.dueDate],pos=day?.balances?.[displayAccount],bal=pos===undefined?'—':fmt(a?.type==='card'?-pos:pos);
   let opts=['External',...activeAccounts().map(a=>a.name)];for(const n of [x.from,x.to])if(n&&!opts.includes(n))opts.push(n);
   let endpointOptions=value=>opts.map(n=>`<option value="${esc(n)}" ${n===value?'selected':''}>${esc(n)}</option>`).join('');
   let label=type==='expense'?'OUT':type==='income'?'IN':'TRANSFER';
   const statusChoices=x.kind==='rec'?['Scheduled','Posted','Skipped']:['Planned','Posted','Cancelled'];
-  return `<tr class="${x.status==='Posted'?'paid':x.status==='Skipped'||x.status==='Cancelled'?'skipped':''}" data-ledger-row="1" data-kind="${x.kind}" data-id="${esc(x.id)}" data-date="${esc(x.dueDate)}">
+  return `<tr class="${x.status==='Posted'?'paid':x.status==='Skipped'||x.status==='Cancelled'?'skipped':''}" data-ledger-row="1" data-kind="${x.kind}" data-id="${esc(x.id)}" data-date="${esc(x.dueDate)}" data-estimate="${esc(x.scheduled)}">
     <td><b>${esc(x.dueDate)}</b><div class="secondary">${x.kind==='rec'?'Recurring':'One-time'}</div></td>
     <td class="title-cell"><b>${esc(x.name)}</b><div class="secondary">${esc(x.source.category||'')}</div><span class="pay-type ${type==='income'?'in':type==='expense'?'out':''}">${label}</span>${type==='transfer'?`<div class="ledger-note">To ${esc(x.eff.to)}</div>`:''}</td>
     <td><select class="compact-control account-control" data-role="from" title="Money FROM ${esc(x.from)}" aria-label="From account for ${esc(x.name)}">${endpointOptions(x.from)}</select></td>
@@ -587,20 +617,34 @@ function ledgerPage(){
     <td class="balance-cell">${bal}<div class="secondary">${pos===undefined?'Outside snapshot':esc(displayAccount)}</div></td>
     <td><button class="btn small primary" data-act="saveLedger">Save</button><div style="margin-top:5px"><button class="btn small" data-act="${x.kind==='rec'?'editRule':'editTransaction'}" data-id="${esc(x.id)}" title="${x.kind==='rec'?'Edit the recurring First due date and future schedule':'Edit this one-time transaction'}">${x.kind==='rec'?'Schedule':'Edit'}</button></div></td>
    </tr>`;
- }).join('')||'<tr><td colspan="10" class="empty">No entries in this month. Add a one-time transaction or enable a recurring payment.</td></tr>';
+ };
+ const postedHtml=postedRows.map(renderLedgerRow).join('')||'<tr><td colspan="10" class="empty">No payments have been posted in this month.</td></tr>';
+ const html=pendingRows.map(renderLedgerRow).join('')||'<tr><td colspan="10" class="empty">No outstanding entries for this month.</td></tr>';
+ const ledgerHead='<tr><th>Scheduled</th><th>Payment / category</th><th>From</th><th>To</th><th class="money-cell">Estimate</th><th>Actual $</th><th>Actual date</th><th>Status</th><th class="balance-cell">Account balance</th><th>Update</th></tr>';
  return `${snapshotWarning()}<div class="panel"><div class="section-top"><h2>Monthly payment register — ${monthLabel(key)}</h2><div class="toolbar"><button class="btn small" data-act="prevMonth">◂ Previous</button>${monthPicker()}<button class="btn small" data-act="nextMonth">Next ▸</button><button class="btn small primary" data-act="addTransaction">＋ One-time</button><button class="btn small" data-act="addRule">＋ Recurring</button></div></div>
- <div class="note ledger-help"><b>Ledger accounts:</b> Use the From and To dropdowns to define money movement for each row. <b>External → AMEX</b> is a purchase that increases card debt and counts as an expense. <b>Checking → AMEX</b> is a payment that reduces card debt and checking cash, without counting as a second expense. Every scheduled payment has an estimate and editable <b>actual amount</b>. Choose both From and To accounts, enter the real date, select <b>Posted</b>, and click <b>Save</b>. Future recurring forecasts automatically replace that occurrence with the actual payment—never charge it twice. Use <b>Skipped</b> to cancel only one recurring occurrence. <b>To move a recurring bill from November to December and all future months, click Schedule and change First due date.</b> The Actual date field records when a payment really posted; it does not reschedule an unpaid bill. Posted historical payments stay in their original month. Each recurring occurrence can have different From and To accounts without changing the future recurring rule.</div>
+ <div class="note ledger-help"><b>Ledger accounts:</b> Use the From and To dropdowns to define money movement for each row. <b>External → AMEX</b> is a purchase that increases card debt and counts as an expense. <b>Checking → AMEX</b> is a payment that reduces card debt and checking cash, without counting as a second expense. Every scheduled payment has an estimate and editable <b>actual amount</b>. Choose both From and To accounts, enter the real date, select <b>Posted</b>, and click <b>Save</b>. If Actual is blank, it automatically uses the Estimate. Future recurring forecasts automatically replace that occurrence with the actual payment—never charge it twice. Use <b>Skipped</b> to cancel only one recurring occurrence. <b>To move a recurring bill from November to December and all future months, click Schedule and change First due date.</b> The Actual date field records when a payment really posted; it does not reschedule an unpaid bill. Posted historical payments stay in their original month. Each recurring occurrence can have different From and To accounts without changing the future recurring rule.</div>
  <div class="ledger-summary">${kpi('Scheduled estimates',money(exp),'All expense estimates this month')}${kpi('Actual paid',money(posted),'Posted expenses paid in this month')}${kpi('Remaining projected',money(sched),'Unpaid expense estimates')}${kpi('Actual income',money(inc),'Posted deposits in this month')}</div>
- <div class="section-top"><h2>Editable payment details</h2>${tableControls('ledger')}</div><div class="ledger-shell compact-grid"><table data-table-id="ledger" class="ledger-table resizable"><thead><tr><th>Scheduled</th><th>Payment / category</th><th>From</th><th>To</th><th class="money-cell">Estimate</th><th>Actual $</th><th>Actual date</th><th>Status</th><th class="balance-cell">Account balance</th><th>Update</th></tr></thead><tbody>${html}</tbody></table></div>
- <p class="foottext">${rows.length} entries. Values update after you click Save. Account balance is the projected closing balance for the chosen account <b>at the end of that payment date</b> (not a statement-confirmed balance). Entries before the verified balance snapshot are already reflected in that snapshot and are not deducted again. Only use Posted for payments that truly cleared.</p>
+ <details id="postedLedgerGroup" class="posted-ledger" ${postedLedgerExpanded?'open':''}>
+   <summary><strong>Posted (${postedRows.length})</strong><span class="posted-subtitle">Completed payments and deposits — ${money(posted)} in actual expenses • Expand to review or correct</span></summary>
+   <div class="posted-toolbar">${tableControls('ledgerPosted')}</div>
+   <div class="ledger-shell posted-shell compact-grid"><table data-table-id="ledgerPosted" class="ledger-table resizable"><thead>${ledgerHead}</thead><tbody>${postedHtml}</tbody></table></div>
+ </details>
+ <div class="section-top"><div class="ledger-active-title"><h2>Scheduled &amp; Other Payments (${pendingRows.length})</h2><button class="btn small" data-act="jumpLedgerToday" type="button">↓ Jump to today</button></div>${tableControls('ledger')}</div>
+ <div id="ledgerActiveScroll" class="ledger-shell compact-grid"><table data-table-id="ledger" class="ledger-table resizable"><thead>${ledgerHead}</thead><tbody>${html}</tbody></table></div>
+ <p class="foottext">${rows.length} entries total. Posted records are collapsed above but remain editable. Values update after you click Save. Account balance is the projected closing balance for the chosen account <b>at the end of that payment date</b> (not a statement-confirmed balance). Entries before the verified balance snapshot are already reflected in that snapshot and are not deducted again. Only use Posted for payments that truly cleared.</p>
  </div>`;
 }
 function saveLedger(el){
  const tr=el.closest('[data-ledger-row]');if(!tr)return;
  const id=tr.dataset.id,date=tr.dataset.date,kind=tr.dataset.kind;
- const amountStr=tr.querySelector('[data-role=actual]').value.trim(),amount=amountStr===''?null:Number(amountStr);
+ const actualInput=tr.querySelector('[data-role=actual]');
+ const amountStr=actualInput.value.trim(),amount=amountStr===''?null:Number(amountStr);
  const actualDate=tr.querySelector('[data-role=paidDate]').value;
  const status=tr.querySelector('[data-role=status]').value,from=tr.querySelector('[data-role=from]').value,to=tr.querySelector('[data-role=to]').value;
+ // Copy the estimate only when posting; leaving Scheduled entries blank keeps actuals distinct.
+ const estimated=Number(tr.dataset.estimate);
+ const effectiveAmount=status==='Posted'&&amount===null?estimated:amount;
+ if(status==='Posted'&&amount===null&&Number.isFinite(estimated)&&estimated>0)actualInput.value=String(estimated);
  if(from===to)return alert('From and To accounts must be different.');
  for(const name of [from,to])if(name!=='External'&&(!accountOf(name)||accountOf(name).archived))return alert('Choose active bank or credit card accounts.');
  if(amountStr!==''&&(!Number.isFinite(amount)||amount<=0))return alert('Enter a positive actual amount or leave it blank.');
@@ -614,14 +658,14 @@ function saveLedger(el){
      }
      return;
    }
-   if(status==='Posted'&&amount===null&&!confirm('No actual amount entered. Use the estimate of '+fmt(rule.amount)+' as the actual cost?'))return;
+   if(status==='Posted'&&(!Number.isFinite(effectiveAmount)||effectiveAmount<=0))return alert('Enter a positive actual amount or estimate before posting.');
    const previous=occurrenceFor(id,date);state.occurrences=state.occurrences.filter(o=>!(o.ruleId===id&&o.dueDate===date));
    if(status!=='Scheduled'||from!==rule.from||to!==rule.to||amount!==null||actualDate!==date)
-    state.occurrences.push({ruleId:id,dueDate:date,status,from,to,actualDate,actualAmount:status==='Posted'?(amount===null?Number(rule.amount):amount):amount,...(status==='Posted'?{name:rule.name,category:rule.category}:{})});
+    state.occurrences.push({ruleId:id,dueDate:date,status,from,to,actualDate,actualAmount:status==='Posted'?effectiveAmount:amount,...(status==='Posted'?{name:rule.name,category:rule.category}:{})});
  }else{
    const t=state.transactions.find(t=>t.id===id);if(!t)return alert('Transaction no longer exists.');
-   if(status==='Posted'&&amount===null&&!confirm('No actual amount entered. Use the estimate of '+fmt(t.amount)+' as the actual cost?'))return;
-   Object.assign(t,{from,to,status,actualDate,actualAmount:status==='Posted'?(amount===null?Number(t.amount):amount):amount});
+   if(status==='Posted'&&(!Number.isFinite(effectiveAmount)||effectiveAmount<=0))return alert('Enter a positive actual amount or estimate before posting.');
+   Object.assign(t,{from,to,status,actualDate,actualAmount:status==='Posted'?effectiveAmount:amount});
  }
  save();render();
 }
@@ -704,6 +748,7 @@ const views={dashboard:['Dashboard','Accounts, cash flow and upcoming bills'],ac
 
 const DEFAULT_WIDTHS={
  ledger:[9,16,13,13,8,9,10,8,10,4],
+ ledgerPosted:[9,16,13,13,8,9,10,8,10,4],
  accounts:[38,16,24,22],
  rules:[8,17,17,11,9,9,8,7,8,6],
  daily:[]
@@ -768,9 +813,20 @@ function onNavigationDragOver(e){const li=e.target.closest('[data-nav-item]');if
 function onNavigationDrop(e){const li=e.target.closest('[data-nav-item]');if(!li||!dragNavigationKey)return;e.preventDefault();let k=dragNavigationKey;dragNavigationKey='';moveNavigation(k,li.dataset.navItem)}
 function onNavigationDragEnd(){dragNavigationKey='';document.querySelectorAll('.admin-nav-row').forEach(x=>x.classList.remove('dragging','drag-over'))}
 
-function render(){let [name,desc]=views[tab];$('pageTitle').textContent=name;$('pageDesc').textContent=desc;const icons={dashboard:'◫',accounts:'▣',administration:'⚙',ledger:'▧',rules:'↻',transactions:'⇄',daily:'▤',monthly:'▥',budgets:'◎',settings:'⚙'};
+function render(){
+ const currentLedgerScroll=tab==='ledger'&&$('ledgerActiveScroll')?$('ledgerActiveScroll').scrollTop:0;
+ const focusKey=state.viewMonth+'|'+today();
+ const ledgerNeedsFocus=tab==='ledger'&&ledgerLastFocusedKey!==focusKey;
+ if(tab!=='ledger')ledgerLastFocusedKey='';
+ let [name,desc]=views[tab];$('pageTitle').textContent=name;$('pageDesc').textContent=desc;const icons={dashboard:'◫',accounts:'▣',administration:'⚙',ledger:'▧',rules:'↻',transactions:'⇄',daily:'▤',monthly:'▥',budgets:'◎',settings:'⚙'};
  $('appBrand').textContent=state.ui.appName;document.title=state.ui.appName+' — Finance Tracker';
- $('menu').innerHTML=state.ui.navOrder.filter(id=>views[id]).map(id=>`<button class="nav ${id===tab?'active':''}" data-tab="${id}">${icons[id]} &nbsp; ${views[id][0]}</button>`).join('');$('view').innerHTML=({dashboard,accounts:accountPage,administration:administrationPage,ledger:ledgerPage,rules:rulesPage,transactions:txPage,daily:dailyPage,monthly:monthlyPage,budgets:budgetsPage,settings:settingsPage})[tab]();prepareTables();if(tab==='administration'&&navEditing&&$('navEditor'))$('navEditor').hidden=false;if(tab==='dashboard')requestAnimationFrame(drawChart)}
+ $('menu').innerHTML=state.ui.navOrder.filter(id=>views[id]).map(id=>`<button class="nav ${id===tab?'active':''}" data-tab="${id}">${icons[id]} &nbsp; ${views[id][0]}</button>`).join('');$('view').innerHTML=({dashboard,accounts:accountPage,administration:administrationPage,ledger:ledgerPage,rules:rulesPage,transactions:txPage,daily:dailyPage,monthly:monthlyPage,budgets:budgetsPage,settings:settingsPage})[tab]();prepareTables();if(tab==='administration'&&navEditing&&$('navEditor'))$('navEditor').hidden=false;if(tab==='dashboard')requestAnimationFrame(drawChart);
+ if(tab==='ledger')requestAnimationFrame(()=>{
+   const holder=$('ledgerActiveScroll');if(!holder)return;
+   if(ledgerNeedsFocus)focusLedgerToday(true);
+   else holder.scrollTop=currentLedgerScroll;
+ });
+}
 function drawChart(){const c=$('mainChart');if(!c)return;let arr=calc().data.slice(0,12),ctx=c.getContext('2d'),w=c.clientWidth,h=c.clientHeight,dpr=window.devicePixelRatio||1;c.width=w*dpr;c.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);let margin={l:65,r:15,t:20,b:34},pw=w-margin.l-margin.r,ph=h-margin.t-margin.b;
  let vals=arr.flatMap(r=>[r.bank,r.debt]);let lo=Math.min(0,...vals),hi=Math.max(1,...vals);if(hi===lo)hi=lo+1;let pad=(hi-lo)*.1;lo-=pad;hi+=pad;let y=v=>margin.t+(hi-v)/(hi-lo)*ph,x=i=>margin.l+(i/(Math.max(1,arr.length-1)))*pw;
  ctx.strokeStyle='#dee7ee';ctx.lineWidth=1;ctx.fillStyle='#617487';ctx.font='11px system-ui';for(let i=0;i<5;i++){let v=lo+(hi-lo)*i/4,yy=y(v);ctx.beginPath();ctx.moveTo(margin.l,yy);ctx.lineTo(w-margin.r,yy);ctx.stroke();ctx.fillText((v/1000).toFixed(0)+'k',10,yy+4)}
@@ -803,15 +859,22 @@ function act(name,el){let id=el?.dataset.id;
  case'saveAccounts':{let els=[...document.querySelectorAll('[data-account-id]')];let updates=[];for(const x of els){const a=state.accounts.find(a=>a.id===x.dataset.accountId),v=x.value.trim();if(!a)continue;if(v!==''&&(!Number.isFinite(+v)||+v<0))return alert('Enter a positive numeric balance for '+a.name);updates.push([a,v===''?null:+v])}for(const [a,v] of updates)a.balance=v;save();render();break}
  case'saveSettings':{const a=$('asOf').value; if(!a)return alert('Enter a valid balance snapshot date.');state.asOf=a;state.horizon=+$('horizon').value;state.lowBalance=Math.max(0,+$('lowBalance').value||0);save();render();break}
  case'saveBudgets':for(let el of document.querySelectorAll('[data-budget]')){let v=el.value.trim();if(v==='')delete state.budgets[el.dataset.budget];else if(+v>=0)state.budgets[el.dataset.budget]=+v;else return alert('Budget cannot be negative.')}save();render();break;
+ case'jumpLedgerToday':state.viewMonth=today().slice(0,7);ledgerLastFocusedKey='';saveDisplay();render();break;
  case'prevMonth':shiftMonth(-1);break;case'nextMonth':shiftMonth(1);break;case'selectMonth':changeMonth(el.dataset.month);break;
  case'exportTx':csvTx();break;case'exportMonthly':csvMonths();break;case'exportRules':csvRules();break;case'exportJson':exportJson();break;
  case'reset':if(confirm('This will reset data'+(CLOUD?' in your SHARED Google Drive file':' in this browser')+'. Have you exported a JSON backup?')&&confirm('Confirm full reset. This cannot be undone without a backup.')){state=defaults();save();tab='dashboard';render()}break;case'closeModal':modal.close();break;
  }}
 document.addEventListener('pointerdown',startColumnResize);document.addEventListener('pointermove',updateColumnResize);document.addEventListener('pointerup',endColumnResize);document.addEventListener('pointercancel',endColumnResize);
  document.addEventListener('dragstart',onNavigationDragStart);document.addEventListener('dragover',onNavigationDragOver);document.addEventListener('drop',onNavigationDrop);document.addEventListener('dragend',onNavigationDragEnd);
+ document.addEventListener('toggle',e=>{if(e.target?.id==='postedLedgerGroup')postedLedgerExpanded=e.target.open;},true);
  document.addEventListener('click',e=>{let n=e.target.closest('[data-tab]');if(n){tab=n.dataset.tab;render();return}n=e.target.closest('[data-act]');if(n)act(n.dataset.act,n)});
 document.addEventListener('input',e=>{if(e.target.id==='ruleSearch'&&$('ruleList'))$('ruleList').innerHTML=ruleTable();if(e.target.id==='txSearch'&&$('txList'))$('txList').innerHTML=txTable()});
-document.addEventListener('change',e=>{if(e.target.id==='dailyScope'){state.ui.dailyScope=e.target.value;save();render()}if(e.target.id==='monthSelect')changeMonth(e.target.value);if(e.target.id==='hidePast'){state.hidePast=e.target.checked;saveDisplay();if($('monthList'))$('monthList').innerHTML=monthTable()}if(e.target.id==='ruleFilter'&&$('ruleList'))$('ruleList').innerHTML=ruleTable();if(['txStatus','txMonth'].includes(e.target.id)&&$('txList'))$('txList').innerHTML=txTable();if(e.target.id==='importJson'){let file=e.target.files?.[0];if(!file)return;let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);d=normalizeState(d);if(confirm('Importing will replace ALL current tracker data. Continue?')){state=d;save();tab='dashboard';render()}}catch(err){alert('Backup could not be loaded: '+err.message)}};reader.readAsText(file)}});
+document.addEventListener('change',e=>{
+ if(e.target.matches('[data-role="status"]')&&e.target.value==='Posted'){
+   const row=e.target.closest('[data-ledger-row]'),actual=row?.querySelector('[data-role="actual"]');
+   if(actual&&actual.value.trim()===''&&Number(row.dataset.estimate)>0)actual.value=row.dataset.estimate;
+ }
+ if(e.target.id==='dailyScope'){state.ui.dailyScope=e.target.value;save();render()}if(e.target.id==='monthSelect')changeMonth(e.target.value);if(e.target.id==='hidePast'){state.hidePast=e.target.checked;saveDisplay();if($('monthList'))$('monthList').innerHTML=monthTable()}if(e.target.id==='ruleFilter'&&$('ruleList'))$('ruleList').innerHTML=ruleTable();if(['txStatus','txMonth'].includes(e.target.id)&&$('txList'))$('txList').innerHTML=txTable();if(e.target.id==='importJson'){let file=e.target.files?.[0];if(!file)return;let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);d=normalizeState(d);if(confirm('Importing will replace ALL current tracker data. Continue?')){state=d;save();tab='dashboard';render()}}catch(err){alert('Backup could not be loaded: '+err.message)}};reader.readAsText(file)}});
 
 /* Installability is separate from Google OAuth; no Google tokens or Drive responses are cached. */
 let pendingInstallPrompt=null;
