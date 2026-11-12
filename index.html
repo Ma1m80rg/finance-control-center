@@ -1,0 +1,743 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Finance Control Center — Payment Ledger & Drive Sync</title>
+<style>
+:root{--ink:#172c40;--ink2:#253f56;--muted:#627387;--teal:#087e82;--teal2:#dff5f2;--blue:#1d4ed8;--pale:#f5f8fc;--line:#dbe4eb;--white:#fff;--red:#b42d35;--amber:#f0b33e;--accent:#dff5f2;--shadow:0 7px 26px rgba(17,43,72,.06)}
+*{box-sizing:border-box}body{margin:0;background:#f3f7fa;font:14px/1.44 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:var(--teal)}.app{display:flex;min-height:100vh}.side{width:239px;flex:none;background:linear-gradient(165deg,#132b43,#203c54);color:white;padding:23px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:9px}.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;letter-spacing:-.5px;padding:4px 9px 22px}.gem{height:32px;width:32px;border-radius:11px;background:#13a9a6;display:grid;place-items:center;color:white;font-size:19px}.nav{border:0;width:100%;text-align:left;background:transparent;color:#dce8f3;border-radius:9px;padding:12px 13px;display:flex;gap:10px;align-items:center}.nav:hover,.nav.active{background:#ffffff20;color:white}.nav.active{box-shadow:inset 3px 0 #3cc7be}.side-bottom{margin-top:auto;font-size:11px;color:#bed0e0;padding:11px;line-height:1.6}.main{flex:1;min-width:0;padding:32px clamp(15px,3vw,48px) 50px}.top{display:flex;gap:15px;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap}.top h1{margin:0;font-size:27px;letter-spacing:-1px}.subtitle{color:var(--muted);margin:5px 0 0}.controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:white;color:var(--ink);padding:10px 14px;border-radius:9px;font-weight:650;white-space:nowrap}.btn:hover{background:#eef5f9}.btn.primary{background:var(--teal);color:white;border-color:var(--teal)}.btn.primary:hover{background:#096d71}.btn.danger{border-color:#efc0c3;color:var(--red)}.btn.small{padding:6px 9px;font-size:12px}.btn:disabled{opacity:.45;cursor:not-allowed}.panel{background:white;border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);padding:20px;margin:16px 0}.panel h2{font-size:17px;letter-spacing:-.3px;margin:0 0 12px}.panel h3{margin:0 0 10px;font-size:15px}.stats{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:14px;margin:17px 0}.stat{border:1px solid var(--line);background:#fff;border-radius:13px;padding:18px 19px;box-shadow:var(--shadow)}.stat label{display:block;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin-bottom:7px}.stat strong{font-size:24px;letter-spacing:-1px}.stat small{display:block;color:var(--muted);margin-top:6px}.neg{color:var(--red)}.good{color:var(--teal)}.warn{color:#a86400}.muted{color:var(--muted)}.tag{font-size:11px;display:inline-block;padding:3px 7px;background:#edf2f7;border-radius:20px;color:#41596c;font-weight:700}.tag.on{background:#dbf5e9;color:#13724e}.tag.off{background:#fff1d8;color:#946000}.note{background:#ecf7f6;border:1px solid #c9e7e4;border-radius:10px;color:#214f56;padding:12px 15px;margin:15px 0}.note.warn{background:#fff4d9;border-color:#eedca8;color:#79530a}.note.alert{background:#fcebec;border-color:#f4c7ca;color:#9b2530}.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);gap:16px}.scroll{overflow:auto;border:1px solid var(--line);border-radius:10px;max-width:100%}.tbl{border-collapse:separate;border-spacing:0;min-width:100%;font-size:12px}.tbl th{white-space:nowrap;text-align:left;background:#eff4f8;color:#334d64;font-weight:750;position:sticky;top:0;z-index:1;padding:11px;border-bottom:1px solid var(--line)}.tbl td{padding:10px 11px;white-space:nowrap;border-bottom:1px solid #edf1f5}.tbl tr:last-child td{border-bottom:0}.tbl tbody tr:hover{background:#f7fafb}.tbl .numeric{text-align:right;font-variant-numeric:tabular-nums}.tbl th.numeric{text-align:right}.tbl .secondary{color:var(--muted);font-size:11px}.tbl tfoot td{font-weight:800;background:#eaf5f4}.mini-input{width:125px;max-width:100%;padding:8px 9px;border:1px solid #c8d9e4;border-radius:7px}.mini-input.money{width:150px;text-align:right;color:#225ac6}.datepick{border:1px solid var(--line);padding:9px;border-radius:8px;background:white;color:var(--ink)}.field{display:flex;flex-direction:column;gap:6px}.field label{color:#496074;font-size:12px;font-weight:750}.field input,.field select,.field textarea{width:100%;padding:10px 11px;border:1px solid #c8d7e2;background:white;color:var(--ink);border-radius:8px}.field input:focus,.field select:focus{outline:2px solid #bce8e3;border-color:#089298}.field textarea{min-height:68px;resize:vertical}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.form-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.section-top{display:flex;justify-content:space-between;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.section-top h2{margin:0}.filter{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.filter select,.filter input{border:1px solid var(--line);border-radius:8px;background:white;padding:8px 10px;max-width:220px}.chart{width:100%;height:270px;display:block}.account-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.account-card{border:1px solid var(--line);padding:12px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;gap:10px}.account-card span{font-size:12px;color:var(--muted)}.account-card strong{display:block;font-size:16px}.empty{color:var(--muted);padding:30px;text-align:center}.right{text-align:right}.numb{font-variant-numeric:tabular-nums}.pill-row{display:flex;gap:6px;flex-wrap:wrap}.pill{border:1px solid var(--line);background:white;border-radius:20px;padding:7px 11px}.pill.selected{background:#d9f3f0;border-color:#63beb7;font-weight:750}.manage-actions{display:flex;gap:6px;flex-wrap:wrap}.manage-actions .btn{white-space:nowrap}.account-table .secondary{white-space:normal;max-width:400px}.admin-instructions{line-height:1.6}.legend{display:flex;gap:16px;color:var(--muted);font-size:12px;flex-wrap:wrap}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.dialog{border:0;border-radius:16px;padding:0;max-width:650px;width:calc(100% - 28px);box-shadow:0 24px 85px #101c3099}.dialog::backdrop{background:#10243985}.dialog-head{background:#f1f7fa;padding:19px 22px;border-bottom:1px solid var(--line);font-size:18px;font-weight:800}.dialog-body{padding:22px;max-height:72vh;overflow:auto}.dashboard-graph{position:relative}.mutedbar{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;margin:10px 0;color:var(--muted);font-size:12px}.banner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}.chip{padding:5px 9px;border-radius:7px;background:#e1f6ef;color:#1f795d;font-weight:750;font-size:12px}.chip.warn{background:#fff1d7;color:#946000}.hidden{display:none!important}.footer{margin-top:25px;color:#77899a;font-size:12px}.subinfo{padding:10px 0;color:var(--muted)}.check{display:flex;align-items:center;gap:8px}.check input{accent-color:var(--teal)}.grow{flex:1}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.totals{background:#eef8f7;font-weight:800}.badrow{background:#fff5f5}.foottext{font-size:12px;color:var(--muted)}.help-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.help-card{border-left:3px solid var(--teal);padding:10px 15px;background:#f4faf9;border-radius:7px}.help-card h3{margin:0 0 5px}.help-card p{margin:0;color:var(--muted)}
+@media(max-width:1100px){.split{grid-template-columns:1fr}.stats{grid-template-columns:repeat(2,minmax(0,1fr))}.side{width:200px}.main{padding:25px 16px}}
+@media(max-width:700px){.app{display:block}.side{position:static;height:auto;width:auto;padding:10px}.logo{padding:8px}.menu{display:flex;overflow:auto;gap:2px}.nav{white-space:nowrap;padding:8px;width:auto}.side-bottom{display:none}.main{padding:18px 10px}.stats,.account-cards,.form-grid,.grid3,.help-cards{grid-template-columns:1fr}.top h1{font-size:23px}.panel{padding:13px}.tbl{font-size:11px}}
+
+.sync-indicator{display:inline-flex;align-items:center;gap:6px;border:1px solid #c8d9e4;padding:9px 11px;border-radius:9px;background:#fff;font-size:12px;font-weight:800;color:#516c83}
+.sync-indicator.good{color:#11764e;border-color:#a7d9bd;background:#e8f9f0}.sync-indicator.working{color:#7a5704;border-color:#e5d49a;background:#fff8e2}.sync-indicator.error{color:#ad303a;border-color:#efb9bf;background:#fff0f2}
+.ledger-shell{overflow:auto;max-height:68vh;border:1px solid var(--line);border-radius:11px}.ledger-table{width:100%;min-width:1080px;border-collapse:separate;border-spacing:0;font-size:12px}.ledger-table th{position:sticky;top:0;background:#edf5f7;color:#36546b;text-align:left;z-index:2;padding:11px 9px;border-bottom:2px solid #d3e2e7}.ledger-table td{border-bottom:1px solid #e9eff4;padding:7px 8px;vertical-align:middle}.ledger-table tbody tr:nth-child(even){background:#f7fafc}.ledger-table tbody tr:hover{background:#e9f6f4}.ledger-table tr.paid{background:#ecf9f2}.ledger-table tr.skipped{opacity:.68}.ledger-table .compact-control{width:100%;min-width:96px;max-width:180px;padding:8px 6px;border:1px solid #cbdde6;border-radius:7px;background:white;font-size:12px}.ledger-table .date-control{min-width:124px;max-width:140px}.ledger-table .amt-control{min-width:94px;max-width:112px;text-align:right}.ledger-table .account-control{min-width:160px;max-width:230px}.ledger-table .title-cell{min-width:185px;max-width:280px;white-space:normal}.ledger-table .balance-cell{min-width:140px;font-variant-numeric:tabular-nums;text-align:right}.ledger-table .money-cell{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.ledger-table .pay-type{display:inline-block;font-size:10px;letter-spacing:.02em;font-weight:800;color:#47768b;background:#e8f1f6;border-radius:5px;padding:2px 6px;margin-top:3px}.ledger-table .pay-type.in{background:#dcf7e7;color:#167251}.ledger-table .pay-type.out{background:#fff0e8;color:#a4512a}.ledger-summary{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.ledger-summary .stat{flex:1;min-width:160px}.ledger-summary .stat strong{font-size:18px}.ledger-help{margin-bottom:10px}.ledger-note{font-size:11px;color:#536a7c;line-height:1.35;margin-top:4px}.ledger-error{color:#ad303a;font-weight:700}.sync-conflict{background:#fff0f0;border:1px solid #e9afb5;color:#7a2433;border-radius:10px;padding:13px;margin:10px 0}
+@media(max-width:700px){.ledger-shell{max-height:70vh}.sync-indicator{order:3;flex-basis:100%;justify-content:center}.ledger-table{min-width:1000px}}
+
+/* Account authentication gate. Never show locally cached finance data before a Drive file is selected. */
+.auth-gate{position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;background:rgba(10,30,49,.88);backdrop-filter:blur(6px)}
+.auth-card{background:#fff;color:#163047;max-width:620px;width:100%;max-height:92vh;overflow:auto;border-radius:18px;padding:30px;box-shadow:0 20px 75px #0005}
+.auth-card h2{margin:0 0 10px;font-size:26px}.auth-card p{color:#496277;line-height:1.55}
+.auth-card .auth-actions{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0}.auth-card .auth-status{background:#eff5fa;border-radius:8px;padding:12px;font-weight:700;white-space:pre-wrap;overflow-wrap:anywhere}
+.auth-card .auth-note{font-size:12px}.auth-gate[hidden]{display:none!important}
+@media(max-width:700px){.auth-card{padding:20px}}
+
+/* Comfortable desktop density with optional full-width focus mode. Column sizes are user-adjustable. */
+.main {padding:20px clamp(10px,1.4vw,26px) 32px}
+.top{margin-bottom:12px}
+.panel{padding:13px 15px;margin:11px 0}
+.stats{gap:9px;margin:10px 0;grid-template-columns:repeat(auto-fit,minmax(190px,1fr))}
+.stat{padding:13px 14px}
+.stat strong{font-size:22px}
+.side{width:222px;padding:16px 11px}
+.nav{padding:10px 11px}
+.note{padding:9px 11px;margin:9px 0}
+.note.collapsible-help{font-size:12px}
+.tbl{table-layout:fixed;width:100%}
+.tbl th,.tbl td{padding:7px 6px;white-space:normal;overflow-wrap:anywhere}
+.tbl td .secondary{overflow-wrap:anywhere}
+.compact-grid table,.ledger-table{table-layout:fixed;width:100%;min-width:0}
+.compact-grid th,.ledger-table th{position:sticky;top:0}
+.compact-grid th,.compact-grid td,.ledger-table th,.ledger-table td{overflow:hidden;min-width:0;white-space:normal;text-overflow:ellipsis;font-size:11px;line-height:1.22;padding:5px 4px}
+.ledger-table .title-cell,.ledger-table .balance-cell{min-width:0;max-width:none}
+.ledger-table .compact-control,.ledger-table .account-control,.ledger-table .date-control,.ledger-table .amt-control{min-width:0;max-width:none;width:100%;height:32px;padding:3px 2px;font-size:11px;border-radius:5px}
+.ledger-table .balance-cell{font-size:11px}
+.ledger-table .balance-cell .secondary{font-size:9px}
+.ledger-table .title-cell .secondary{font-size:10px}
+.ledger-table .title-cell .pay-type{padding:1px 4px;font-size:9px}
+.ledger-table .btn.small{padding:4px 6px;font-size:10px}
+.ledger-shell,.compact-grid{overflow:auto;max-width:100%;border-radius:9px}
+.ledger-shell{max-height:65vh}
+.table-toolbar{display:flex;align-items:center;gap:6px;flex-wrap:wrap;margin-left:auto}
+.table-toolbar .btn{font-size:11px;padding:6px 8px}
+.col-resize{position:absolute;right:0;top:0;bottom:0;width:8px;cursor:col-resize;touch-action:none;z-index:4;background:transparent}
+.col-resize:hover,.col-resize.dragging{background:rgba(8,126,130,.24)}
+.resizable th{position:sticky;top:0;overflow:visible!important;white-space:normal}
+.resizable th:not(:last-child){border-right:1px solid #d5e0e9}
+.resizable .col-label{display:block;overflow:hidden;text-overflow:ellipsis}
+.resizable .numeric .col-label{text-align:right}
+.resizing-column, .resizing-column *{cursor:col-resize!important;user-select:none!important}
+body.wide-view .side{display:none}
+body.wide-view .main{padding:10px 14px 20px}
+body.wide-view .top{gap:5px;margin-bottom:5px}
+body.wide-view .top h1{font-size:21px}
+body.wide-view .subtitle{display:none}
+body.wide-view .note.collapsible-help{display:none}
+body.wide-view .ledger-summary{margin:4px 0}
+body.wide-view .stat{padding:8px}
+body.wide-view .stat strong{font-size:18px}
+body.wide-view .panel{padding:9px;margin:7px 0}
+body.wide-view .ledger-shell{max-height:calc(100vh - 200px)}
+.focus-toggle{background:#f0f6f8}
+.admin-nav-list{padding:0;margin:12px 0;list-style:none;max-width:530px}
+.admin-nav-row{display:flex;align-items:center;gap:12px;border:1px solid var(--line);border-radius:8px;margin:5px 0;padding:9px 12px;background:#fff;cursor:grab}
+.admin-nav-row.dragging{opacity:.4}
+.admin-nav-row.drag-over{outline:2px dashed var(--teal);background:#e4f6f3}
+.admin-nav-row .grip{font-size:18px;color:#607789;touch-action:none}
+.admin-nav-row .nav-title{flex:1;font-weight:700}
+.admin-nav-row .nav-buttons{display:flex;gap:5px}
+.admin-nav-row .nav-buttons .btn{padding:5px 8px}
+.dashboard-kpis{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media(max-width:1000px){.dashboard-kpis{grid-template-columns:repeat(2,minmax(0,1fr))}.side{width:175px}.main{padding:12px 9px}}
+@media(max-width:700px){.dashboard-kpis{grid-template-columns:1fr}.main{padding:9px}.side{width:auto}.panel{padding:9px}.ledger-shell{max-height:68vh}.ledger-table{min-width:840px}.compact-grid .tbl{min-width:640px}body.wide-view .side{display:none}}
+
+</style></head><body><div class="app">
+<aside class="side"><div class="logo"><span class="gem">◈</span><span id="appBrand">Finance Control Center</span></div><nav class="menu" id="menu"></nav><div class="side-bottom"><strong>GOOGLE DRIVE SYNC</strong><br>Connected through the secure Google Drive API.<br><b>Export a JSON backup regularly.</b><br>No banking credentials are stored.</div></aside>
+<main class="main"><div class="top"><div><h1 id="pageTitle"></h1><p class="subtitle" id="pageDesc"></p></div><div class="controls"><button class="btn focus-toggle" id="focusToggle" title="Expand tables across the full window">⤢ Focus</button><span id="syncIndicator" class="sync-indicator" role="status" aria-live="polite">LOCAL • Not synced</span><button class="btn" id="chooseNewFileTop" title="Choose different shared data file">☁ File</button><button class="btn" id="switchGoogle" title="Choose Google account">⇄ Account</button><button class="btn" id="backupTop">↧ Backup data</button><button class="btn primary" id="quickAdd">＋ Add transaction</button></div></div><div id="view"></div><div class="footer">Finance Control Center • Personal finance tracker • Hosted website with Google Drive API sync; open using your HTTPS site URL • No connection to any financial institution • Budget projections are estimates, not bank-confirmed balances.</div></main></div>
+<dialog class="dialog" id="dialog"><div class="dialog-head" id="dialogTitle">Edit</div><div class="dialog-body" id="dialogBody"></div></dialog>
+<script src="./config.js"></script>
+<script async defer src="https://accounts.google.com/gsi/client"></script>
+<script async defer src="https://apis.google.com/js/api.js"></script>
+<div id="cloudGate" class="auth-gate" role="dialog" aria-modal="true" aria-labelledby="gateHeading"><section class="auth-card"><h2 id="gateHeading">Connect Finance Control Center</h2><p>Choose a Google account that has <b>Editor</b> access to your shared finance data file. Choose the same JSON file on each computer or phone. Your data remains in your private Google Drive.</p><div id="gateStatus" class="auth-status" role="status">Ready to connect.</div><div id="gateAccount" style="margin-top:10px;font-weight:700"></div><div class="auth-actions"><button class="btn primary" id="googleConnect">1. Sign in / choose account</button><button class="btn" id="chooseDataFile" disabled>2. Choose shared JSON file</button><button class="btn" id="retryDataFile" hidden>Retry opening shared file</button></div><p class="auth-note"><b>First setup:</b> Upload <code>Finance_Control_Center_Data.json</code> into your private Google Drive Finances folder. Each authorized account must select that same file once through Google's file picker. Access is enforced by Google Drive sharing permissions.</p><p class="auth-note">If you previously used Apps Script, you can select its existing <code>Finance_Control_Center_Data.json</code> here instead of creating a second file. The JSON backup can also be imported after connecting.</p><p class="auth-note">The cloud app requires HTTPS hosting and the configured Google OAuth credentials. Opening this file directly from your computer or Google Drive preview does not enable sign-in.</p></section></div>
+<script>
+'use strict';
+const STORE='finance_control_center_drive_api_emergency_v2';
+const CATEGORIES=['Housing','Utilities','Groceries','Dining','Fuel','Transportation','Insurance','Healthcare','Childcare','Pets','Education / Activities','Shopping','Entertainment','Subscriptions','Travel','Taxes','Business Expense','Debt Interest & Fees','Personal Allowance','Other Expense','Income - Paycheck','Income - Benefits','Business Income','Other Income','Savings / Transfer','Credit Card Payment'];
+const FREQ={once:'One time',daily:'Daily',weekly:'Weekly',biweekly:'Every 2 weeks',monthly:'Monthly',quarterly:'Quarterly',semiannual:'Every 6 months',yearly:'Yearly'};
+const MONTHS=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+const $=id=>document.getElementById(id), esc=s=>String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=n=>new Intl.NumberFormat('en-US',{style:'currency',currency:'USD'}).format(Number(n)||0);
+const fnum=n=>Number(n||0).toLocaleString('en-US',{minimumFractionDigits:2,maximumFractionDigits:2});
+const tick=()=>Date.now().toString(36)+Math.random().toString(36).slice(2,8);
+const today=()=>{const d=new Date();return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;};
+const daynum=s=>Math.round(Date.parse(s+'T00:00:00Z')/86400000);
+const daystr=n=>new Date(n*86400000).toISOString().slice(0,10);
+const ym=s=>s.slice(0,7);
+function monthInfo(key){let [y,m]=key.split('-').map(Number);return {start:daynum(`${y}-${String(m).padStart(2,'0')}-01`),end:daynum(daystr(daynum(`${y}-${String(m).padStart(2,'0')}-01`)+40).slice(0,8)+'01')-1};}
+function monthEnd(key){let [y,m]=key.split('-').map(Number);return daynum(new Date(Date.UTC(y,m,0)).toISOString().slice(0,10));}
+const addMonths=(key,n)=>{let [y,m]=key.split('-').map(Number);let z=y*12+(m-1)+n;return `${Math.floor(z/12)}-${String((z%12+12)%12+1).padStart(2,'0')}`};
+function dueInMonth(first,key){const [fy,fm,fd]=first.split('-').map(Number),[y,m]=key.split('-').map(Number);const last=new Date(Date.UTC(y,m,0)).getUTCDate();return `${key}-${String(Math.min(fd,last)).padStart(2,'0')}`;}
+function monthDiff(a,b){const [ay,am]=a.slice(0,7).split('-').map(Number),[by,bm]=b.slice(0,7).split('-').map(Number);return (by-ay)*12+bm-am;}
+const money=n=>'<span class="numb '+(Number(n)<-0.004?'neg':'')+'">'+fmt(n)+'</span>';
+function defaults(){
+ // No personal account names, amounts, or schedules are embedded in this public web page.
+ // Account names live only in the private Drive data JSON that an authorized user selects.
+ const keys=['dashboard','accounts','administration','ledger','rules','transactions','daily','monthly','budgets','settings'];
+ return {version:1,asOf:today(),viewMonth:today().slice(0,7),horizon:20,lowBalance:500,hidePast:true,
+  accounts:[],rules:[],transactions:[],occurrences:[],budgets:{},
+  ui:{appName:'Finance Control Center',navOrder:keys,columnWidths:{},dailyScope:'all'}};
+}
+function normalizeState(s){
+ if(!s||!Array.isArray(s.accounts)||!Array.isArray(s.rules)||!Array.isArray(s.transactions))throw Error('Not a finance tracker backup');
+ const ids=new Set();
+ s.accounts=s.accounts.map((a,i)=>{
+  if(!a||typeof a.name!=='string'||!['bank','card'].includes(a.type))throw Error('Invalid account details in backup');
+  let id=typeof a.id==='string'&&a.id&&!ids.has(a.id)?a.id:'acct-'+tick()+'-'+i;
+  ids.add(id);return {...a,id,archived:a.archived===true};
+ });
+ s.budgets=s.budgets&&typeof s.budgets==='object'?s.budgets:{};
+  s.occurrences=Array.isArray(s.occurrences)?s.occurrences:[];
+ const navigationKeys=['dashboard','accounts','administration','ledger','rules','transactions','daily','monthly','budgets','settings'];
+ s.ui=s.ui&&typeof s.ui==='object'&&!Array.isArray(s.ui)?s.ui:{};
+ s.ui.appName=typeof s.ui.appName==='string'&&s.ui.appName.trim()?s.ui.appName.trim().slice(0,55):'Finance Control Center';
+ let nav=Array.isArray(s.ui.navOrder)?s.ui.navOrder.filter(k=>navigationKeys.includes(k)):[];
+ s.ui.navOrder=[...new Set([...nav,...navigationKeys])];
+ s.ui.columnWidths=s.ui.columnWidths&&typeof s.ui.columnWidths==='object'&&!Array.isArray(s.ui.columnWidths)?s.ui.columnWidths:{};
+ s.ui.dailyScope=['all','bank','card','totals'].includes(s.ui.dailyScope)?s.ui.dailyScope:'all';
+ return s;
+}
+// Drive API version: user-selected file, narrow drive.file scope, no Apps Script.
+// Existing legacy Apps Script envelope {revision, updatedAt, state} is supported.
+function load(){return normalizeState(defaults());}
+let state=load(),tab='dashboard',cache=null,cacheSig='';
+const CLOUD=true;
+const DC=Object.freeze(window.FINANCE_DRIVE_CONFIG||{});
+const DRIVE_SCOPE='https://www.googleapis.com/auth/drive.file';
+let syncRevision=0,syncReady=false,syncDirty=false,syncSending=false,syncConflict=false,syncLoading=false,syncLastAt='';
+let syncTimer=0,syncPoll=null,remoteFingerprint='',selectedFileId='',selectedFileName='',googleToken='',googleTokenExp=0,googleClient=null,cloudUserEmail='',authBusy=false,sessionEpoch=0;
+const $gate=$('cloudGate');
+function markSync(text,kind=''){let el=$('syncIndicator');if(el){el.textContent=text;el.className='sync-indicator '+kind;} }
+function gateMessage(message){$('gateStatus').textContent=message;}
+function configured(){return DC.clientId&&DC.clientId.endsWith('.apps.googleusercontent.com')&&DC.apiKey&&!DC.apiKey.startsWith('YOUR_')&&/^\d+$/.test(String(DC.projectNumber||''));}
+function gateShow(message){$gate.hidden=false;if(message)gateMessage(message);$('gateAccount').textContent=cloudUserEmail?'Signed in: '+cloudUserEmail:'';}
+function gateHide(){$gate.hidden=true;}
+function markLocalRisk(){try{if(selectedFileId)localStorage.setItem(STORE+'_'+selectedFileId,JSON.stringify({state,unsynced:true,at:new Date().toISOString()}));}catch(e){console.warn('Emergency local snapshot unavailable:',e)}}
+function markLocalSynced(){try{if(selectedFileId)localStorage.removeItem(STORE+'_'+selectedFileId);}catch{}}
+function save(){
+ cache=null;cacheSig='';
+ if(!selectedFileId||!syncReady){markSync('Not connected — export backup','error');markLocalRisk();return;}
+ syncDirty=true;markLocalRisk();
+ if(syncConflict){markSync('Sync conflict — backup & reload','error');return;}
+ markSync('Saving changes…','working');queueSync();
+}
+function queueSync(){if(!syncReady||syncConflict||syncSending||!syncDirty)return;clearTimeout(syncTimer);syncTimer=setTimeout(pushSync,450);}
+function tokenValid(){return Boolean(googleToken)&&Date.now()<googleTokenExp-15000;}
+async function apiFetch(url,options={}){
+ if(!tokenValid()){
+  gateShow('Google sign-in has expired. Choose your Google account again to resume synchronization. Unsaved edits remain on this page; download a JSON backup before closing it.');
+  throw Error('Google authorization expired; reconnect before saving.');
+ }
+ const headers={Authorization:'Bearer '+googleToken,...(options.headers||{})};
+ const response=await fetch(url,{...options,headers,cache:'no-store'});
+ if(response.status===401){googleTokenExp=0;gateShow('Google sign-in has expired. Choose your account again.');throw Error('Google authorization expired (401).');}
+ if(!response.ok){let t=await response.text();throw Error('Google Drive HTTP '+response.status+': '+t.slice(0,350));}
+ return response;
+}
+function metaURL(fileId){return 'https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(fileId)+'?fields='+encodeURIComponent('id,name,mimeType,parents,capabilities(canEdit),modifiedTime,headRevisionId,version,md5Checksum')+'&supportsAllDrives=true';}
+async function getMeta(fileId){return (await apiFetch(metaURL(fileId))).json();}
+function fingerprint(meta){return String(meta.headRevisionId||meta.md5Checksum||meta.version||meta.modifiedTime||'');}
+async function readRemote(){
+ const fileId=selectedFileId;
+ const meta=await getMeta(fileId);
+ if(meta.name!=='Finance_Control_Center_Data.json')throw Error('Choose the file named Finance_Control_Center_Data.json. Selected: '+meta.name);
+ if(meta.mimeType==='application/vnd.google-apps.document')throw Error('Data file must be uploaded JSON, not a Google Doc.');
+ if(meta.capabilities&&meta.capabilities.canEdit===false)throw Error('This account lacks Editor access to the shared JSON file.');
+ if(DC.folderId&&(!Array.isArray(meta.parents)||!meta.parents.includes(DC.folderId)))throw Error('This finance JSON is not located in the configured private Google Drive folder.');
+ const response=await apiFetch('https://www.googleapis.com/drive/v3/files/'+encodeURIComponent(fileId)+'?alt=media&supportsAllDrives=true');
+ const body=JSON.parse(await response.text());
+ let record=body&&body.state&&Number.isInteger(body.revision)?body:{revision:0,updatedAt:null,state:body};
+ if(!record.state)throw Error('Finance data file contains no tracker state.');
+ return {meta,revision:record.revision,updatedAt:record.updatedAt||null,state:normalizeState(record.state),fingerprint:fingerprint(meta)};
+}
+function showSyncConflict(){
+ syncConflict=true;syncDirty=true;markLocalRisk();markSync('Conflict: export backup & reload','error');
+ alert('Another device changed the shared finance file. Your local edits were NOT discarded. Download your JSON backup, reload the shared file, and reapply conflicting edits. Drive does not provide an atomic transaction lock, so avoid simultaneous editing.');
+ if(tab!=='settings'){tab='settings';render();}
+}
+async function pushSync(){
+ if(!syncReady||syncSending||syncConflict||!syncDirty)return;
+ syncSending=true;syncDirty=false;
+ const snapshot=JSON.stringify(state),rev=syncRevision,fp=remoteFingerprint,epoch=sessionEpoch;
+ markSync('Checking shared file before save…','working');
+ try{
+  const latest=await readRemote();
+  if(epoch!==sessionEpoch)return;
+  if(latest.revision!==rev||latest.fingerprint!==fp){showSyncConflict();return;}
+  const record={revision:rev+1,updatedAt:new Date().toISOString(),state:JSON.parse(snapshot)};
+  markSync('Saving to your Google Drive…','working');
+  await apiFetch('https://www.googleapis.com/upload/drive/v3/files/'+encodeURIComponent(selectedFileId)+'?uploadType=media&supportsAllDrives=true',{
+   method:'PATCH',headers:{'Content-Type':'application/json;charset=UTF-8'},body:JSON.stringify(record)});
+  if(epoch!==sessionEpoch)return;
+  const verified=await readRemote();
+  if(epoch!==sessionEpoch)return;
+  if(verified.revision!==rev+1||JSON.stringify(verified.state)!==snapshot){showSyncConflict();return;}
+  syncRevision=verified.revision;remoteFingerprint=verified.fingerprint;syncLastAt=record.updatedAt;
+  if(syncDirty){markSync('Saving newer changes…','working');queueSync();}
+  else{markLocalSynced();markSync('Saved to Drive ✓','good');}
+ }catch(e){if(epoch!==sessionEpoch)return;syncDirty=true;syncConflict=true;markLocalRisk();markSync('Save failed — backup / reload','error');console.error('Finance Drive sync error:',e);alert('The Drive save did not complete. A local recovery snapshot was kept. Export a JSON backup and retry after checking permissions and connection. Error: '+e.message);}
+ finally{syncSending=false;if(syncDirty&&!syncConflict&&syncReady&&tokenValid())queueSync();}
+}
+async function remoteRead(initial=false){
+ if(!selectedFileId||syncLoading||syncSending||syncDirty||syncConflict)return;
+ if(!initial&&(document.querySelector('dialog[open]')||document.activeElement?.matches('input,textarea,select')))return;
+ syncLoading=true;const epoch=sessionEpoch;
+ try{
+  const result=await readRemote();if(epoch!==sessionEpoch)return;
+  if(initial){
+   const risk=localStorage.getItem(STORE+'_'+selectedFileId);
+   if(risk){gateMessage('An emergency local backup from an interrupted save exists for this file. Please preserve it before continuing.');
+    if(confirm('Unsynced finance changes were found from an earlier session. Download that recovery JSON before opening the cloud file?')){
+      try{const snap=JSON.parse(risk);exportFile('Finance_Recovery_Unsynced.json',JSON.stringify(snap.state,null,2),'application/json');}catch{}
+    }
+   }
+   state=result.state;syncRevision=result.revision;remoteFingerprint=result.fingerprint;syncLastAt=result.updatedAt||'';
+   try{if(cloudUserEmail)localStorage.setItem(STORE+'_selected_'+cloudUserEmail,selectedFileId);}catch{}
+   syncReady=true;syncDirty=false;syncConflict=false;cache=null;cacheSig='';render();gateHide();
+   $('view').style.pointerEvents='';$('quickAdd').disabled=false;
+   markSync('Connected: '+cloudUserEmail+' ✓','good');
+  }else if(result.revision!==syncRevision||result.fingerprint!==remoteFingerprint){
+   const currentMonth=state.viewMonth,past=state.hidePast;
+   state=result.state;state.viewMonth=currentMonth;state.hidePast=past;
+   syncRevision=result.revision;remoteFingerprint=result.fingerprint;syncLastAt=result.updatedAt||'';
+   cache=null;cacheSig='';render();markSync('Updated from Drive ✓','good');
+  }
+ }catch(e){console.error(e);markSync('Drive read error','error');if(initial)gateShow('Cannot open shared Drive file. '+e.message);}
+ finally{syncLoading=false;}
+}
+function reloadFromCloud(){
+ if(syncDirty&&!confirm('Your unsynced edits could be lost. Download a JSON backup FIRST. Load Drive version anyway?'))return;
+ syncDirty=false;syncConflict=false;syncReady=true;remoteRead(true);
+}
+async function attachDataFile(id){
+ selectedFileId=id;selectedFileName='Finance_Control_Center_Data.json';
+ sessionEpoch++;syncReady=false;syncDirty=false;syncConflict=false;remoteFingerprint='';syncRevision=0;
+ $('retryDataFile').hidden=false;gateShow('Reading the selected file from Google Drive…');
+ await remoteRead(true);
+}
+function pickerReady(){return window.gapi&&window.google&&google.picker;}
+function openPicker(){
+ if(!tokenValid())return gateShow('Connect your Google account first.');
+ if(!configured())return gateShow('Set your OAuth client, Google Picker API key, and project number in config.js first.');
+ if(!window.gapi)return gateShow('Google Picker is still loading. Try again.');
+ gateMessage('Opening Google Drive file picker…');
+ gapi.load('picker',()=>{
+  try{
+   const view=new google.picker.DocsView(google.picker.ViewId.DOCS);
+   view.setMimeTypes('application/json');
+   if(google.picker.DocsViewMode?.LIST)view.setMode(google.picker.DocsViewMode.LIST);
+   const shared=new google.picker.DocsView(google.picker.ViewId.DOCS);
+   shared.setMimeTypes('application/json');
+   shared.setOwnedByMe(false); // explicitly includes files shared with this Google account.
+   if(google.picker.DocsViewMode?.LIST)shared.setMode(google.picker.DocsViewMode.LIST);
+   const picker=new google.picker.PickerBuilder()
+    .setTitle('Choose Finance_Control_Center_Data.json')
+    .setDeveloperKey(DC.apiKey).setAppId(String(DC.projectNumber)).setOAuthToken(googleToken)
+    .addView(view).addView(shared).setOrigin(window.location.origin)
+    .setCallback(async data=>{
+      if(data.action===google.picker.Action.CANCEL){gateMessage('File selection cancelled. Choose your shared finance JSON to continue.');return;}
+      if(data.action!==google.picker.Action.PICKED)return;
+      const doc=data[google.picker.Response.DOCUMENTS]?.[0];
+      const id=doc?.[google.picker.Document.ID];
+      if(!id){gateMessage('No file was selected.');return;}
+      await attachDataFile(id);
+    }).build();
+   picker.setVisible(true);
+  }catch(e){console.error(e);gateMessage('Picker error: '+e.message+' — check API key website restrictions, APIs, and project number.');}
+ });
+}
+function chooseAccount(){
+ // Re-authorization for the same account is allowed even with unsynced edits.
+ gateShow('Choose the Google account that has access to your private finance folder.');
+ if(!configured()){gateShow('SETUP REQUIRED: Edit config.js with your Google Cloud OAuth Web client ID, API key, and project number. Then host this site via HTTPS.');return;}
+ if(!window.google?.accounts?.oauth2){gateShow('Google Identity Services is loading or blocked. Disable blocking extensions for accounts.google.com and retry.');return;}
+ if(!googleClient){googleClient=google.accounts.oauth2.initTokenClient({client_id:DC.clientId,scope:DRIVE_SCOPE,callback:async response=>{
+  authBusy=false;
+  if(response.error||!response.access_token){gateMessage('Google sign-in failed: '+(response.error||'No access token'));return;}
+  googleToken=response.access_token;googleTokenExp=Date.now()+(Number(response.expires_in)||3500)*1000;
+  try{
+   const r=await apiFetch('https://www.googleapis.com/drive/v3/about?fields=user(emailAddress,displayName)');
+   const nextEmail=(await r.json()).user?.emailAddress||'Google account';
+   if(syncDirty&&cloudUserEmail&&nextEmail!==cloudUserEmail){
+     gateMessage('Unsaved edits belong to '+cloudUserEmail+'. Reconnect using that account, or export a JSON backup first.');
+     googleToken='';googleTokenExp=0;return;
+   }
+   const reauthSame=Boolean(selectedFileId)&&cloudUserEmail===nextEmail;
+   cloudUserEmail=nextEmail;
+   $('gateAccount').textContent='Signed in: '+cloudUserEmail;
+   $('chooseDataFile').disabled=false;
+   if(reauthSame){gateHide();markSync('Reconnected: '+nextEmail,'good');if(syncDirty)queueSync();else remoteRead(false);}
+   else{
+     gateMessage('Signed in as '+cloudUserEmail+'. Checking for a previously selected Drive file…');
+     let savedId='';try{savedId=localStorage.getItem(STORE+'_selected_'+cloudUserEmail)||'';}catch{}
+     if(savedId)await attachDataFile(savedId);
+     else gateMessage('Signed in as '+cloudUserEmail+'. Select Finance_Control_Center_Data.json from the shared Drive folder.');
+   }
+  }catch(e){gateMessage('Google Drive API access error: '+e.message);}
+ },error_callback:e=>{authBusy=false;gateMessage('Google sign-in popup problem: '+(e.type||'Unknown error')+'. Check popup blockers.');}});}
+ if(authBusy)return;
+ authBusy=true;
+ // Explicit account selection avoids dependence on Chrome's default authuser value.
+ googleClient.requestAccessToken({prompt:'select_account'});
+}
+function startCloud(){
+ markSync('Not signed in • Drive not connected','working');
+ $('view').style.pointerEvents='none';$('quickAdd').disabled=true;
+ gateShow(configured()?'Choose a Google account to connect to the shared Drive file.':'Setup required: edit config.js and host these files on an HTTPS website before connecting.');
+ $('googleConnect').onclick=chooseAccount;
+ $('chooseDataFile').onclick=openPicker;
+ $('retryDataFile').onclick=()=>{if(selectedFileId)remoteRead(true);else openPicker();};
+ $('chooseNewFileTop').onclick=()=>{
+   if(syncDirty||syncSending){alert('Finish saving, then download a JSON backup before switching data files.');return;}
+   if(!tokenValid())return gateShow('Sign in again to choose a data file.');
+   gateShow('Select the shared finance data JSON file in Google Picker.');openPicker();
+ };
+ $('switchGoogle').onclick=()=>{
+  if(syncDirty||syncSending){alert('Download a JSON backup and finish saving before switching accounts.');return;}
+  if(googleToken&&window.google?.accounts?.oauth2){try{google.accounts.oauth2.revoke(googleToken);}catch{}}
+  googleToken='';googleTokenExp=0;cloudUserEmail='';selectedFileId='';syncReady=false;
+  sessionEpoch++;syncConflict=false;syncDirty=false;state=normalizeState(defaults());cache=null;cacheSig='';render();
+  $('view').style.pointerEvents='none';$('quickAdd').disabled=true;$('chooseDataFile').disabled=true;
+  gateShow('Choose your Google account, then select the shared finance file.');
+ };
+ if(!syncPoll)syncPoll=setInterval(()=>{if(syncReady&&tokenValid()){
+    if(syncDirty&&!syncConflict)queueSync();else remoteRead(false);
+  }else if(syncReady&&!tokenValid()){markSync('Google sign-in expired — reconnect','error');gateShow('Google authorization expired. Sign in again before continuing.');}},20000);
+ document.addEventListener('visibilitychange',()=>{if(!document.hidden&&syncReady&&tokenValid()){if(syncDirty)queueSync();else remoteRead(false);}});
+ window.addEventListener('focus',()=>{if(syncReady&&tokenValid()){if(syncDirty)queueSync();else remoteRead(false);}});
+ window.addEventListener('beforeunload',e=>{if(syncDirty||syncSending){e.preventDefault();e.returnValue='Unsaved financial data';}});
+}
+const activeAccounts=()=>state.accounts.filter(a=>!a.archived);
+const allAccounts=()=>activeAccounts().map(a=>a.name);
+const accountOf=n=>state.accounts.find(a=>a.name===n);
+const defaultFrom=()=>activeAccounts().find(a=>a.type==='bank')?.name||activeAccounts()[0]?.name||'External';
+function activeEndpoints(o){return (o.from==='External'||allAccounts().includes(o.from))&&(o.to==='External'||allAccounts().includes(o.to))}
+function accountOptions(current){
+ const opts=['External',...allAccounts()];
+ if(current&&!opts.includes(current)&&accountOf(current))opts.push(current);
+ return opts.map(x=>`<option value="${esc(x)}" ${x===current?'selected':''}>${esc(x)}${accountOf(x)?.archived?' (archived)':''}</option>`).join('');
+}
+function signedBase(a){return a.balance===null||a.balance===''?0:(a.type==='card'?-Number(a.balance):Number(a.balance))}
+function opening(){return Object.fromEntries(activeAccounts().map(a=>[a.name,signedBase(a)]))}
+// Forecast account positions are SIGNED: bank cash positive, credit debt negative.
+// External -> card is a merchant purchase: the card owes MORE, so subtract from
+// its signed position. A bank -> card payment increases the signed card position
+// (less owed) while decreasing bank cash. This is a transfer, not an expense.
+function addImpact(obj,from,to,amt){
+ if(from==='External'&&accountOf(to)?.type==='card'){
+  if(Object.hasOwn(obj,to))obj[to]-=amt;
+  return;
+ }
+ if(from!=='External'&&Object.hasOwn(obj,from))obj[from]-=amt;
+ if(to!=='External'&&Object.hasOwn(obj,to))obj[to]+=amt;
+}
+function hasAllBalances(){return activeAccounts().every(a=>a.balance!==null&&a.balance!==''&&Number.isFinite(+a.balance))}
+function isRealEvent(o){return o&&o.from&&o.to&&o.from!==o.to&&+o.amount>0}
+function actualOf(o){return o.actualAmount!==undefined&&o.actualAmount!==null&&o.actualAmount!==''?Number(o.actualAmount):Number(o.amount)}
+function entryDate(o){return o.status==='Posted'?(o.actualDate||o.date):o.date}
+function occurrenceFor(ruleId,dueDate){return state.occurrences.find(o=>o.ruleId===ruleId&&o.dueDate===dueDate)}
+function recurringEntry(r,dueDate){
+  const o=occurrenceFor(r.id,dueDate);
+  if(o?.status==='Skipped')return null;
+  if(o?.status==='Posted')return null; // Posted occurrences are included separately on actual payment dates.
+  const from=o?.from || (o?.account?(r.from==='External'?r.from:o.account):r.from);
+  const to=o?.to || (o?.account?(r.from==='External'?o.account:r.to):r.to);
+  return {...r,from,to,date:dueDate,dueDate,ruleId:r.id,kind:'Recurring',status:'Planned'};
+}
+function postedOccurrence(o){
+ const r=state.rules.find(r=>r.id===o.ruleId);if(!r||o.status!=='Posted')return null;
+ const from=o.from|| (o.account?(r.from==='External'?'External':o.account):r.from);
+ const to=o.to|| (o.account?(r.from==='External'?o.account:r.to):r.to);
+ return {...r,name:o.name||r.name,category:o.category||r.category,from,to,amount:o.actualAmount!==''&&o.actualAmount!==undefined&&o.actualAmount!==null?+o.actualAmount:+r.amount,date:o.actualDate||o.dueDate,dueDate:o.dueDate,ruleId:r.id,kind:'RecurringActual',status:'Posted'};
+}
+function allPosted(){
+ return [...state.transactions.filter(t=>t.status==='Posted'&&isRealEvent({...t,amount:actualOf(t)})).map(t=>({...t,amount:actualOf(t),date:entryDate(t),kind:'Posted',name:t.description||t.name})),
+ ...state.occurrences.map(postedOccurrence).filter(Boolean)].filter(t=>isRealEvent(t)&&t.date);
+}
+
+function* events(rule,lower,upper){
+ if(!rule.active||!isRealEvent(rule)||!rule.start||!activeEndpoints(rule))return;
+ let from=daynum(rule.start),end=rule.end?Math.min(daynum(rule.end),upper):upper;
+ if(end<lower||from>end)return;
+ let freq=rule.frequency;
+ if(freq==='once'){if(from>=lower&&from<=end)yield from;return}
+ let diff={daily:1,weekly:7,biweekly:14}[freq];
+ if(diff){let k=Math.max(0,Math.ceil((lower-from)/diff));for(let d=from+k*diff;d<=end;d+=diff)yield d;return}
+ let jump={monthly:1,quarterly:3,semiannual:6,yearly:12}[freq];if(!jump)return;
+ let lowMonth=ym(daystr(lower)),firstMonth=ym(rule.start);let k=Math.max(0,Math.floor(monthDiff(firstMonth,lowMonth)/jump));
+ for(;;k++){let target=addMonths(firstMonth,k*jump),d=daynum(dueInMonth(rule.start,target));if(d>end)break;if(d>=lower)yield d}
+}
+// Classify using account TYPE, not arrow direction alone. Card purchases
+// entered as External -> AMEX are expenses, not income. Payments from checking
+// to AMEX move money between owned accounts and are not counted twice.
+function eventType(from,to){
+ if(from==='External')return accountOf(to)?.type==='card'?'expense':'income';
+ if(to==='External')return 'expense';
+ return 'transfer';
+}
+function monthLabel(key){let [y,m]=key.split('-').map(Number);return `${MONTHS[m-1]} ${y}`}
+function calc(){
+ let signature=JSON.stringify(state);if(cache&&signature===cacheSig)return cache;
+ let start=state.asOf.slice(0,7),months=state.horizon*12,ss=daynum(state.asOf),final=monthEnd(addMonths(start,months-1));
+ let data=Array.from({length:months},(_,i)=>({key:addMonths(start,i),postedIncome:0,postedExpense:0,plannedIncome:0,plannedExpense:0,recIncome:0,recExpense:0,cardPayment:0,transfer:0,delta:Object.fromEntries(allAccounts().map(n=>[n,0])),postedCategory:{},plannedCategory:{},recCategory:{}}));
+ let byMonth=new Map(data.map((o,i)=>[o.key,i]));
+ function add(o,d,kind){let idx=byMonth.get(ym(daystr(d)));if(idx===undefined)return;let b=data[idx],amt=Number(o.amount),typ=eventType(o.from,o.to);
+  if(d>ss)addImpact(b.delta,o.from,o.to,amt);
+  if(typ==='income')b[kind==='Posted'?'postedIncome':kind==='Planned'?'plannedIncome':'recIncome']+=amt;
+  if(typ==='expense'){b[kind==='Posted'?'postedExpense':kind==='Planned'?'plannedExpense':'recExpense']+=amt;let dest=kind==='Posted'?b.postedCategory:kind==='Planned'?b.plannedCategory:b.recCategory;dest[o.category]=(dest[o.category]||0)+amt;}
+  if(typ==='transfer'&&d>ss){if(o.category==='Credit Card Payment')b.cardPayment+=amt;else b.transfer+=amt;}
+ }
+ for(const t of state.transactions){if(!t||!t.date||t.status!=='Planned'||!isRealEvent(t)||!activeEndpoints(t))continue;let d=daynum(t.date);if(d>ss&&d<=final)add(t,d,'Planned');}
+ for(const r of state.rules)for(const d of events(r,ss+1,final)){let o=recurringEntry(r,daystr(d));if(o&&isRealEvent(o)&&activeEndpoints(o))add(o,d,'Recurring');}
+ for(const o of allPosted()){let d=daynum(o.date);if(d<=final&&isRealEvent(o))add(o,d,'Posted');}
+ let balances=opening();for(const b of data){for(const a of activeAccounts())balances[a.name]+=b.delta[a.name];b.end={...balances};b.bank=activeAccounts().filter(a=>a.type==='bank').reduce((x,a)=>x+balances[a.name],0);b.debt=activeAccounts().filter(a=>a.type==='card').reduce((x,a)=>x-balances[a.name],0);b.net=b.bank-b.debt;b.futureIncome=b.plannedIncome+b.recIncome;b.futureExpense=b.plannedExpense+b.recExpense;}
+ cache={data,byMonth,ss,final,start,hasBalances:hasAllBalances()};cacheSig=signature;return cache;
+}
+function postedForMonth(key){
+ const rows=allPosted().filter(t=>ym(t.date||'')===key),categories={};
+ let inc=0,exp=0;
+ for(const t of rows){
+  const typ=eventType(t.from,t.to),value=Number(t.amount)||0;
+  if(typ==='income')inc+=value;
+  if(typ==='expense'){
+   exp+=value;
+   categories[t.category]=(categories[t.category]||0)+value;
+  }
+ }
+ return {inc,exp,categories};
+}
+function monthData(key){let p=calc(),b=p.data[p.byMonth.get(key)],posted=postedForMonth(key);if(b)return {...b,postedIncome:posted.inc,postedExpense:posted.exp,postedCategory:posted.categories};return {key,postedIncome:posted.inc,postedExpense:posted.exp,postedCategory:posted.categories,plannedIncome:0,plannedExpense:0,recIncome:0,recExpense:0,plannedCategory:{},recCategory:{},bank:null,debt:null,net:null,futureIncome:0,futureExpense:0,cardPayment:0,transfer:0};}
+function eventsInRange(lower,upper){let list=[];
+ for(const r of state.rules)for(const d of events(r,lower,upper)){let o=recurringEntry(r,daystr(d));if(o&&activeEndpoints(o))list.push(o);}
+ for(const t of state.transactions)if(t.status==='Planned'&&t.date&&isRealEvent(t)&&activeEndpoints(t)&&daynum(t.date)>=lower&&daynum(t.date)<=upper)list.push({...t,kind:'Planned',name:t.description||t.name||'Transaction'});
+ for(const o of allPosted())if(o.date&&daynum(o.date)>=lower&&daynum(o.date)<=upper)list.push(o);
+ list.sort((a,b)=>a.date.localeCompare(b.date)||String(a.name||'').localeCompare(String(b.name||'')));return list;}
+function dayRows(key){let p=calc(),mIdx=p.byMonth.get(key),start=daynum(key+'-01'),end=monthEnd(key),acc=opening();
+ if(mIdx!==undefined&&mIdx>0)acc={...p.data[mIdx-1].end};
+ let dayEvents=eventsInRange(Math.max(start,p.ss+1),end),idx=0,result=[];
+ for(let d=start;d<=end;d++){let date=daystr(d),active=d>p.ss&&mIdx!==undefined;let ins=0,outs=0,planned=0,ev=[];
+  if(active){while(idx<dayEvents.length&&dayEvents[idx].date===date){let e=dayEvents[idx++];addImpact(acc,e.from,e.to,+e.amount);ev.push(e);let typ=eventType(e.from,e.to);if(typ==='income')ins+=+e.amount;if(typ==='expense')outs+=+e.amount;if(e.kind==='Planned')planned+=+e.amount;}}
+  let bank=activeAccounts().filter(a=>a.type==='bank').reduce((sum,a)=>sum+acc[a.name],0),debt=activeAccounts().filter(a=>a.type==='card').reduce((sum,a)=>sum-acc[a.name],0);
+  result.push({date,active,balances:active?{...acc}:null,income:ins,outflow:outs,planned,bank:active?bank:null,debt:active?debt:null,events:ev});
+ }return result;}
+function sel(opts,value='',placeholder){return `<select ${placeholder?'required':''}>${placeholder?`<option value="">${esc(placeholder)}</option>`:''}${opts.map(x=>`<option value="${esc(x)}" ${String(value)===String(x)?'selected':''}>${esc(x)}</option>`).join('')}</select>`}
+function catPicker(v){return sel(CATEGORIES,v,'Choose category')}
+function accountPicker(v){return sel(['External',...allAccounts()],v,'Choose account')}
+function monthPicker(id='monthSelect'){return `<input class="datepick" type="month" id="${id}" value="${esc(state.viewMonth)}">`}
+function snapshotWarning(){return !hasAllBalances()?`<div class="note warn"><b>Balances incomplete:</b> ${activeAccounts().filter(a=>a.balance===null||a.balance==='').length} account(s) still need an opening balance. You can use a real zero, but do not treat forecasts as accurate until all balances are verified. <button class="btn small" data-tab="accounts">Enter balances</button></div>`:''}
+function kpi(label,val,sub,negative=false){return `<div class="stat"><label>${label}</label><strong class="${negative?'neg':''}">${val}</strong><small>${sub}</small></div>`}
+function sumAccounts(map,type){return activeAccounts().filter(a=>a.type===type).reduce((v,a)=>v+(map[a.name]||0),0)}
+function dashboard(){let p=calc(),acc=opening(),cash=sumAccounts(acc,'bank'),debt=-sumAccounts(acc,'card'),net=cash-debt,cur=monthData(state.viewMonth),first=p.data.slice(0,12);
+ let due=eventsInRange(p.ss+1,Math.min(p.ss+30,p.final));let out=due.filter(t=>eventType(t.from,t.to)==='expense').reduce((s,t)=>s+Number(t.amount),0);
+ return `${snapshotWarning()}<div class="stats dashboard-kpis">${kpi('Bank cash at snapshot',money(cash),`${activeAccounts().filter(a=>a.type==='bank').length} active bank accounts`)}${kpi('Credit card debt',money(debt),`${activeAccounts().filter(a=>a.type==='card').length} active credit cards`,debt>0)}${kpi('Scheduled bills in next 30 days',money(out),`${due.filter(t=>eventType(t.from,t.to)==='expense').length} expenses, including card charges; excludes transfers`)}</div>
+ <div class="split"><div class="panel dashboard-graph"><div class="section-top"><h2>Balance forecast</h2><span class="tag">Next 12 months</span></div><canvas class="chart" id="mainChart"></canvas><div class="legend"><span><i class="dot" style="background:#07898a"></i>Bank cash</span><span><i class="dot" style="background:#b4663e"></i>Credit owed</span></div></div><div class="panel"><div class="section-top"><h2>Upcoming payments & deposits</h2><button class="btn small" data-tab="rules">Edit schedule</button></div><div class="scroll"><table class="tbl"><thead><tr><th>Date</th><th>Description</th><th>Amount</th></tr></thead><tbody>${due.slice(0,12).map(t=>`<tr><td>${t.date}</td><td>${esc(t.name)}<div class="secondary">${esc(t.from)} → ${esc(t.to)}</div></td><td class="numeric">${money(t.amount)}</td></tr>`).join('')||'<tr><td colspan="3" class="empty">No upcoming active payments. Suggested drafts are off by default.</td></tr>'}</tbody></table></div></div></div>
+ <div class="panel"><div class="section-top"><h2>Account-by-account outlook</h2><div class="toolbar">Selected month ${monthPicker()} <button class="btn small" data-tab="daily">View daily balances</button></div></div><div class="scroll"><table class="tbl"><thead><tr><th>Account</th><th>Type</th><th class="numeric">Verified at snapshot</th><th class="numeric">End of selected month</th></tr></thead><tbody>${activeAccounts().map(a=>{let val=cur.end?cur.end[a.name]:null,display=a.type==='card'?-val:val,opening=a.balance===null?'Not entered':fmt(a.balance);return `<tr><td><b>${esc(a.name)}</b></td><td>${a.type==='bank'?'Bank':'Credit card (owed)'}</td><td class="numeric">${opening}</td><td class="numeric">${val===null?'<span class="muted">Outside forecast</span>':money(display)}</td></tr>`}).join('')}</tbody></table></div></div>
+ <div class="note"><b>How this works:</b> Your opening balances for active accounts start on <b>${esc(state.asOf)}</b>. An External → credit card purchase increases amount owed and counts as an expense; a bank → credit card payment reduces checking cash and card debt, but is not an additional expense. Posted transactions provide historical expenses but do not deduct from the verified balances again.</div>`}
+function ruleTable(){let rows=[...state.rules].sort((a,b)=>(b.active?1:0)-(a.active?1:0)||String(a.name||'').localeCompare(String(b.name||'')));let type=$('ruleFilter')?.value||'all',q=($('ruleSearch')?.value||'').toLowerCase();if(type!=='all')rows=rows.filter(r=>type==='active'?r.active:!r.active);if(q)rows=rows.filter(r=>[r.name,r.category,r.from,r.to].join(' ').toLowerCase().includes(q));return `<div class="scroll compact-grid"><table data-table-id="rules" class="tbl resizable"><thead><tr><th>On / off</th><th>Payment</th><th>From → To</th><th>Category</th><th class="numeric">Amount</th><th>Frequency</th><th>First due</th><th>Ends</th><th>Next due</th><th> </th></tr></thead><tbody>${rows.map(r=>{let next=nextDue(r,daynum(state.asOf)+1);return `<tr><td><button class="btn small" data-act="toggleRule" data-id="${esc(r.id)}"><span class="tag ${r.active?'on':'off'}">${r.active?'ACTIVE':'OFF'}</span></button></td><td><b>${esc(r.name)}</b><div class="secondary">${esc(r.notes||'')}</div></td><td>${esc(r.from)}<div class="secondary">→ ${esc(r.to)}</div></td><td>${esc(r.category)}</td><td class="numeric">${money(r.amount)}</td><td>${esc(FREQ[r.frequency]||r.frequency)}</td><td>${esc(r.start)}</td><td>${esc(r.end||'—')}</td><td>${r.active&&next?daystr(next):'—'}</td><td><button class="btn small" data-act="editRule" data-id="${esc(r.id)}">Edit</button> <button class="btn small danger" data-act="deleteRule" data-id="${esc(r.id)}">Delete</button></td></tr>`}).join('')||'<tr><td class="empty" colspan="10">No matching rules.</td></tr>'}</tbody></table></div>`}
+function nextDue(r,after){let it=events(r,after,after+3660);let n=it.next();return n.done?null:n.value}
+function rulesPage(){return `<div class="banner"><div class="note" style="flex:1;margin:0">${state.rules.filter(r=>r.active).length} rules are active. Suggested bills are <b>OFF</b> until you enable them. An archived account cannot be used by a new active rule.</div><button class="btn primary" data-act="addRule">＋ New recurring rule</button></div><div class="panel"><div class="section-top"><h2>Recurring payment editor</h2>${tableControls('rules')}<div class="filter"><input id="ruleSearch" placeholder="Search payments…" aria-label="Search payments"><select id="ruleFilter"><option value="all">All rules</option><option value="active">Active only</option><option value="inactive">Inactive only</option></select></div></div><div id="ruleList">${ruleTable()}</div></div><div class="note">Supported timing: One time, daily, weekly, every 2 weeks, monthly, quarterly, every 6 months, yearly. Monthly dates on the 29th–31st automatically fall on the last valid day in shorter months. Add an optional stop date to end any schedule.</div>`}
+function txPage(){return `<div class="banner"><div class="note" style="flex:1;margin:0">Use <b>Posted</b> only for actual spending. Posted entries dated after the verified balance snapshot affect forecasts; older posted entries do not deduct twice. Use <b>Planned</b> for future one-off payments. Never enter a card payment as an external expense.</div><div class="toolbar"><button class="btn" data-act="exportTx">Export CSV for Excel</button><button class="btn primary" data-act="addTransaction">＋ Single transaction</button></div></div><div class="panel"><div class="section-top"><h2>All single transactions & archived actuals</h2><div class="filter"><input id="txSearch" placeholder="Search transactions…"><select id="txStatus"><option value="all">All statuses</option><option>Posted</option><option>Planned</option><option>Cancelled</option></select><input type="month" class="datepick" id="txMonth" title="Filter by month"></div></div><div id="txList">${txTable()}</div></div>`}
+function txTable(){let query=($('txSearch')?.value||'').toLowerCase(),stat=$('txStatus')?.value||'all',month=$('txMonth')?.value||'';let rows=[...state.transactions].sort((a,b)=>(b.date||'').localeCompare(a.date||''));if(stat!=='all')rows=rows.filter(x=>x.status===stat);if(month)rows=rows.filter(x=>ym(x.date)===month);if(query)rows=rows.filter(x=>[x.description,x.category,x.from,x.to,x.notes].join(' ').toLowerCase().includes(query));return `<div class="scroll"><table class="tbl"><thead><tr><th>Date</th><th>Status</th><th>Description</th><th>From</th><th>To</th><th>Category</th><th class="numeric">Amount</th><th>Actions</th></tr></thead><tbody>${rows.slice(0,1000).map(t=>`<tr><td>${esc(t.date)}</td><td><span class="tag ${t.status==='Posted'?'on':t.status==='Planned'?'off':''}">${esc(t.status)}</span></td><td><b>${esc(t.description)}</b><div class="secondary">${esc(t.notes)}</div></td><td>${esc(t.from)}</td><td>${esc(t.to)}</td><td>${esc(t.category)}</td><td class="numeric">${money(t.status==='Posted'?actualOf(t):t.amount)}</td><td><button class="btn small" data-act="editTransaction" data-id="${esc(t.id)}">Edit</button> <button class="btn small danger" data-act="deleteTransaction" data-id="${esc(t.id)}">Delete</button></td></tr>`).join('')||'<tr><td class="empty" colspan="8">No recorded one-time or Posted transactions. Click “Single transaction” to begin.</td></tr>'}</tbody></table></div><div class="foottext" style="padding:10px">Showing ${Math.min(rows.length,1000)} of ${rows.length} matching transactions.</div>`}
+
+function primaryAccount(o){return o.from==='External'?o.to:o.from;}
+function accountChanged(o,n){return {...o,from:o.from==='External'?'External':n,to:o.from==='External'?n:o.to};}
+function ledgerEntries(key){
+ const start=daynum(key+'-01'),end=monthEnd(key),rows=[];
+ for(const r of state.rules){
+  // Persist prior actuals even if a rule was disabled, renamed, or rescheduled.
+  const dueDates=new Set(state.occurrences.filter(o=>o.ruleId===r.id&&ym(o.dueDate)===key).map(o=>o.dueDate));
+  if(r.active&&activeEndpoints(r))for(const d of events(r,start,end))dueDates.add(daystr(d));
+  for(const date of [...dueDates].sort()){
+    let override=occurrenceFor(r.id,date);
+    const actual=override?.status==='Posted'?postedOccurrence(override):null;
+    const scheduled=recurringEntry(r,date);
+    const eff=actual||scheduled||{...r,date,dueDate:date,kind:'Recurring',status:'Skipped'};
+    rows.push({kind:'rec',id:r.id,dueDate:date,source:r,override,eff,name:actual?.name||r.name,scheduled:r.amount,actual:override?.actualAmount??'',actualDate:override?.actualDate||date,status:override?.status||'Scheduled',from:override?.from||eff.from,to:override?.to||eff.to});
+  }
+ }
+ for(const t of state.transactions)if(t.date&&ym(t.date)===key){rows.push({kind:'tx',id:t.id,dueDate:t.date,source:t,eff:t,name:t.description||'One-time payment',scheduled:t.amount,actual:t.actualAmount??'',actualDate:t.actualDate||t.date,status:t.status||'Planned',from:t.from,to:t.to});}
+ rows.sort((a,b)=>a.dueDate.localeCompare(b.dueDate)||a.name.localeCompare(b.name));return rows;
+}
+function ledgerPage(){
+ let key=state.viewMonth,rows=ledgerEntries(key),days=dayRows(key),balances=Object.fromEntries(days.map(d=>[d.date,d]));
+ let exp=0,posted=postedForMonth(key).exp,sched=0,inc=postedForMonth(key).inc;
+ for(const x of rows){let type=eventType(x.eff.from,x.eff.to);if(x.status==='Posted'){}
+   else if(!['Skipped','Cancelled'].includes(x.status)&&type==='expense')sched+=Number(x.scheduled);
+   if(type==='expense')exp+=Number(x.scheduled);
+ }
+ let html=rows.map(x=>{
+  const type=eventType(x.eff.from,x.eff.to),displayAccount=x.from==='External'?x.to:x.from,a=accountOf(displayAccount),day=balances[x.status==='Posted'?x.actualDate:x.dueDate],pos=day?.balances?.[displayAccount],bal=pos===undefined?'—':fmt(a?.type==='card'?-pos:pos);
+  let opts=['External',...activeAccounts().map(a=>a.name)];for(const n of [x.from,x.to])if(n&&!opts.includes(n))opts.push(n);
+  let endpointOptions=value=>opts.map(n=>`<option value="${esc(n)}" ${n===value?'selected':''}>${esc(n)}</option>`).join('');
+  let label=type==='expense'?'OUT':type==='income'?'IN':'TRANSFER';
+  const statusChoices=x.kind==='rec'?['Scheduled','Posted','Skipped']:['Planned','Posted','Cancelled'];
+  return `<tr class="${x.status==='Posted'?'paid':x.status==='Skipped'||x.status==='Cancelled'?'skipped':''}" data-ledger-row="1" data-kind="${x.kind}" data-id="${esc(x.id)}" data-date="${esc(x.dueDate)}">
+    <td><b>${esc(x.dueDate)}</b><div class="secondary">${x.kind==='rec'?'Recurring':'One-time'}</div></td>
+    <td class="title-cell"><b>${esc(x.name)}</b><div class="secondary">${esc(x.source.category||'')}</div><span class="pay-type ${type==='income'?'in':type==='expense'?'out':''}">${label}</span>${type==='transfer'?`<div class="ledger-note">To ${esc(x.eff.to)}</div>`:''}</td>
+    <td><select class="compact-control account-control" data-role="from" title="Money FROM ${esc(x.from)}" aria-label="From account for ${esc(x.name)}">${endpointOptions(x.from)}</select></td>
+    <td><select class="compact-control account-control" data-role="to" title="Money TO ${esc(x.to)}" aria-label="To account for ${esc(x.name)}">${endpointOptions(x.to)}</select></td>
+    <td class="money-cell">${fmt(x.scheduled)}</td>
+    <td><input class="compact-control amt-control" data-role="actual" type="number" step="0.01" min="0.01" value="${x.actual===''?'':esc(x.actual)}" placeholder="Actual $" aria-label="Actual cost"></td>
+    <td><input class="compact-control date-control" data-role="paidDate" type="date" value="${esc(x.actualDate)}" aria-label="Actual payment date"></td>
+    <td><select class="compact-control" data-role="status">${statusChoices.map(v=>`<option value="${v}" ${x.status===v?'selected':''}>${v}</option>`).join('')}</select></td>
+    <td class="balance-cell">${bal}<div class="secondary">${pos===undefined?'Outside snapshot':esc(displayAccount)}</div></td>
+    <td><button class="btn small primary" data-act="saveLedger">Save</button><div style="margin-top:5px"><button class="btn small" data-act="${x.kind==='rec'?'editRule':'editTransaction'}" data-id="${esc(x.id)}">Edit</button></div></td>
+   </tr>`;
+ }).join('')||'<tr><td colspan="10" class="empty">No entries in this month. Add a one-time transaction or enable a recurring payment.</td></tr>';
+ return `${snapshotWarning()}<div class="panel"><div class="section-top"><h2>Monthly payment register — ${monthLabel(key)}</h2><div class="toolbar"><button class="btn small" data-act="prevMonth">◂ Previous</button>${monthPicker()}<button class="btn small" data-act="nextMonth">Next ▸</button><button class="btn small primary" data-act="addTransaction">＋ One-time</button><button class="btn small" data-act="addRule">＋ Recurring</button></div></div>
+ <div class="note ledger-help"><b>Ledger accounts:</b> Use the From and To dropdowns to define money movement for each row. <b>External → AMEX</b> is a purchase that increases card debt and counts as an expense. <b>Checking → AMEX</b> is a payment that reduces card debt and checking cash, without counting as a second expense. Every scheduled payment has an estimate and editable <b>actual amount</b>. Choose both From and To accounts, enter the real date, select <b>Posted</b>, and click <b>Save</b>. Future recurring forecasts automatically replace that occurrence with the actual payment—never charge it twice. Use <b>Skipped</b> to cancel only one recurring occurrence. Each recurring occurrence can have different From and To accounts without changing the future recurring rule.</div>
+ <div class="ledger-summary">${kpi('Scheduled estimates',money(exp),'All expense estimates this month')}${kpi('Actual paid',money(posted),'Posted expenses paid in this month')}${kpi('Remaining projected',money(sched),'Unpaid expense estimates')}${kpi('Actual income',money(inc),'Posted deposits in this month')}</div>
+ <div class="section-top"><h2>Editable payment details</h2>${tableControls('ledger')}</div><div class="ledger-shell compact-grid"><table data-table-id="ledger" class="ledger-table resizable"><thead><tr><th>Scheduled</th><th>Payment / category</th><th>From</th><th>To</th><th class="money-cell">Estimate</th><th>Actual $</th><th>Actual date</th><th>Status</th><th class="balance-cell">Account balance</th><th>Update</th></tr></thead><tbody>${html}</tbody></table></div>
+ <p class="foottext">${rows.length} entries. Values update after you click Save. Account balance is the projected closing balance for the chosen account <b>at the end of that payment date</b> (not a statement-confirmed balance). Entries before the verified balance snapshot are already reflected in that snapshot and are not deducted again. Only use Posted for payments that truly cleared.</p>
+ </div>`;
+}
+function saveLedger(el){
+ const tr=el.closest('[data-ledger-row]');if(!tr)return;
+ const id=tr.dataset.id,date=tr.dataset.date,kind=tr.dataset.kind;
+ const amountStr=tr.querySelector('[data-role=actual]').value.trim(),amount=amountStr===''?null:Number(amountStr);
+ const actualDate=tr.querySelector('[data-role=paidDate]').value;
+ const status=tr.querySelector('[data-role=status]').value,from=tr.querySelector('[data-role=from]').value,to=tr.querySelector('[data-role=to]').value;
+ if(from===to)return alert('From and To accounts must be different.');
+ for(const name of [from,to])if(name!=='External'&&(!accountOf(name)||accountOf(name).archived))return alert('Choose active bank or credit card accounts.');
+ if(amountStr!==''&&(!Number.isFinite(amount)||amount<=0))return alert('Enter a positive actual amount or leave it blank.');
+ if(status==='Posted'&&!actualDate)return alert('Select the actual payment date.');
+ if(status==='Posted'&&actualDate>today()&&!confirm('This actual payment date is in the future. Are you certain the transaction has already posted?'))return;
+ if(kind==='rec'){
+   const rule=state.rules.find(r=>r.id===id);if(!rule)return alert('This recurring rule no longer exists.');
+   if(status==='Posted'&&amount===null&&!confirm('No actual amount entered. Use the estimate of '+fmt(rule.amount)+' as the actual cost?'))return;
+   const previous=occurrenceFor(id,date);state.occurrences=state.occurrences.filter(o=>!(o.ruleId===id&&o.dueDate===date));
+   if(status!=='Scheduled'||from!==rule.from||to!==rule.to||amount!==null||actualDate!==date)
+    state.occurrences.push({ruleId:id,dueDate:date,status,from,to,actualDate,actualAmount:status==='Posted'?(amount===null?Number(rule.amount):amount):amount,...(status==='Posted'?{name:rule.name,category:rule.category}:{})});
+ }else{
+   const t=state.transactions.find(t=>t.id===id);if(!t)return alert('Transaction no longer exists.');
+   if(status==='Posted'&&amount===null&&!confirm('No actual amount entered. Use the estimate of '+fmt(t.amount)+' as the actual cost?'))return;
+   Object.assign(t,{from,to,status,actualDate,actualAmount:status==='Posted'?(amount===null?Number(t.amount):amount):amount});
+ }
+ save();render();
+}
+function accountPage(){let openingMap=opening();return `<div class="note warn"><b>Balance snapshot rules:</b> Put the actual balance visible at the bank (positive) or the amount currently owed on the credit card (positive). Your date must be the date these balances were true. No previous-year transactions or projected balances were imported. Start in November 2026.</div><div class="panel"><div class="section-top"><h2>As-of date and planning settings</h2></div><div class="grid3"><div class="field"><label>Balances are accurate as of</label><input id="asOf" type="date" value="${esc(state.asOf)}"></div><div class="field"><label>Years forward</label><select id="horizon">${[5,10,15,20,25,30].map(n=>`<option value="${n}" ${state.horizon===n?'selected':''}>${n} years</option>`).join('')}</select></div><div class="field"><label>Low bank balance alert ($)</label><input id="lowBalance" type="number" min="0" step="10" value="${state.lowBalance}"></div></div><div style="margin-top:13px"><button class="btn primary" data-act="saveSettings">Save dates & settings</button></div></div><div class="panel"><div class="section-top"><h2>Verified balances — ${activeAccounts().length} active accounts</h2>${tableControls('accounts')}<button class="btn small" data-tab="administration">Manage accounts</button><button class="btn primary" data-act="saveAccounts">Save account balances</button></div><div class="scroll compact-grid"><table data-table-id="accounts" class="tbl resizable"><thead><tr><th>Account</th><th>Type</th><th class="numeric">Current bank balance / credit owed ($)</th><th class="numeric">Signed balance used by forecast</th></tr></thead><tbody>${activeAccounts().map(a=>`<tr><td><b>${esc(a.name)}</b></td><td>${a.type==='bank'?'Bank':'Credit card'}</td><td class="numeric"><input class="mini-input money" data-account-id="${esc(a.id)}" type="number" min="0" step="0.01" placeholder="Enter balance" value="${a.balance===null?'':a.balance}"></td><td class="numeric">${a.balance===null?'<span class="warn">Not entered</span>':money(openingMap[a.name])}</td></tr>`).join('')}</tbody></table></div></div><div class="note">Credit card balance OWED is positive in the input box, but negative in net-position math. Deposits increase a bank account; credit card purchases make the signed card balance more negative; transfers from a bank to a card bring the signed card balance closer to zero.</div>`}
+function monthSwitcher(){return `<div class="toolbar"><button class="btn small" data-act="prevMonth">◂ Previous</button>${monthPicker()}<button class="btn small" data-act="nextMonth">Next ▸</button><label class="check"><input type="checkbox" id="hidePast" ${state.hidePast?'checked':''}> Hide past months</label></div>`}
+function monthlyPage(){let v=monthData(state.viewMonth),counts=calc(),budgetEntries=CATEGORIES.filter(c=>!c.startsWith('Income')&&!['Business Income','Other Income','Savings / Transfer','Credit Card Payment'].includes(c));
+ let budgetTot=budgetEntries.reduce((a,c)=>a+(Number(state.budgets[c])||0),0),actual=v.postedExpense,planned=v.plannedExpense+v.recExpense;
+ return `${snapshotWarning()}<div class="panel"><div class="section-top"><h2>Month-by-month review</h2>${monthSwitcher()}</div><div class="stats">${kpi('Posted / actual expenses',money(actual),'Posted one-time and recurring actuals')}${kpi('Future scheduled + one-offs',money(planned),'Upcoming expenses in this month')}${kpi('Expected month spending',money(actual+planned),'Actual + remaining expected')}${kpi('Monthly budget total',money(budgetTot),'Optional targets from Budgets')}</div>
+ <div class="scroll"><table class="tbl"><thead><tr><th>Expense category</th><th class="numeric">Budget</th><th class="numeric">Posted actual</th><th class="numeric">Planned one-offs</th><th class="numeric">Recurring left</th><th class="numeric">Expected total</th><th class="numeric">Budget left</th></tr></thead><tbody>${budgetEntries.map(c=>{let budget=state.budgets[c],actual=v.postedCategory[c]||0,planned=v.plannedCategory[c]||0,sched=v.recCategory[c]||0,total=actual+planned+sched,rem=(Number(budget)||0)-total;return `<tr class="${budget!==undefined&&budget!==''&&rem<0?'badrow':''}"><td><b>${esc(c)}</b></td><td class="numeric">${budget===undefined||budget===''?'—':money(budget)}</td><td class="numeric">${money(actual)}</td><td class="numeric">${money(planned)}</td><td class="numeric">${money(sched)}</td><td class="numeric"><b>${money(total)}</b></td><td class="numeric">${budget===undefined||budget===''?'—':money(rem)}</td></tr>`}).join('')}</tbody><tfoot><tr><td>TOTAL EXPENSES</td><td class="numeric">${money(budgetTot)}</td><td class="numeric">${money(v.postedExpense)}</td><td class="numeric">${money(v.plannedExpense)}</td><td class="numeric">${money(v.recExpense)}</td><td class="numeric">${money(v.postedExpense+v.plannedExpense+v.recExpense)}</td><td class="numeric">${money(budgetTot-v.postedExpense-v.plannedExpense-v.recExpense)}</td></tr></tfoot></table></div>
+ <div class="stats" style="margin-top:19px">${kpi('Actual income',money(v.postedIncome),'Posted receipts')}${kpi('Future income',money(v.futureIncome),'Recurring + one-offs')}${kpi('End bank cash',v.bank===null?'—':money(v.bank),'Opening cash plus future cash flow')}${kpi('End card debt',v.debt===null?'—':money(v.debt),'Card purchases less card payments')}</div>
+ <div class="section-top"><h2>Long-term monthly history & outlook</h2><button class="btn" data-act="exportMonthly">Export monthly forecast CSV</button></div><div id="monthList">${monthTable()}</div></div>`}
+function monthTable(){let p=calc(),rows=state.hidePast?p.data.filter(o=>o.key>=state.asOf.slice(0,7)):p.data;return `<div class="scroll" style="max-height:475px"><table class="tbl"><thead><tr><th>Month</th><th class="numeric">Posted spent</th><th class="numeric">Future income</th><th class="numeric">Future expense</th><th class="numeric">Month cash / debt transfer</th><th class="numeric">Ending bank cash</th><th class="numeric">Ending card owed</th><th class="numeric">Net position</th><th>Details</th></tr></thead><tbody>${rows.map(o=>`<tr><td><b>${monthLabel(o.key)}</b></td><td class="numeric">${money(o.postedExpense)}</td><td class="numeric">${money(o.futureIncome)}</td><td class="numeric">${money(o.futureExpense)}</td><td class="numeric">${money(o.cardPayment+o.transfer)}</td><td class="numeric">${money(o.bank)}</td><td class="numeric">${money(o.debt)}</td><td class="numeric">${money(o.net)}</td><td><button class="btn small" data-act="selectMonth" data-month="${o.key}">View</button></td></tr>`).join('')}</tbody></table></div>`}
+function dailyPage(){let p=calc(),rows=dayRows(state.viewMonth),cols=activeAccounts().filter(a=>state.ui.dailyScope==='all'||(state.ui.dailyScope==='bank'&&a.type==='bank')||(state.ui.dailyScope==='card'&&a.type==='card'));return `${snapshotWarning()}<div class="panel"><div class="section-top"><h2>Daily closing balance forecast</h2><div class="toolbar"><label>Accounts <select id="dailyScope" class="datepick"><option value="all" ${state.ui.dailyScope==='all'?'selected':''}>All</option><option value="bank" ${state.ui.dailyScope==='bank'?'selected':''}>Banks</option><option value="card" ${state.ui.dailyScope==='card'?'selected':''}>Credit cards</option><option value="totals" ${state.ui.dailyScope==='totals'?'selected':''}>Totals only</option></select></label>${tableControls('daily')}</div>${monthSwitcher()}</div><div class="note">Every column below is one of your exact accounts. Bank balances are cash available; credit-card columns show <b>amount owed</b>. Individual daily expenses and deposits appear in the final Events column. For editable actual costs and an account dropdown, use Payment Ledger. Days before the snapshot date show a dash because they cannot be reconstructed from a later balance.</div><div class="scroll compact-grid"><table data-table-id="daily" class="tbl resizable"><thead><tr><th>Date</th>${cols.map(a=>`<th class="numeric">${esc(a.name)}</th>`).join('')}<th class="numeric">Income</th><th class="numeric">Expenses</th><th class="numeric">Bank total</th><th class="numeric">Card debt</th><th>Events</th></tr></thead><tbody>${rows.map(r=>`<tr class="${r.active&&r.bank<state.lowBalance?'badrow':''}"><td><b>${r.date.slice(8)}</b><div class="secondary">${new Date(r.date+'T00:00:00Z').toLocaleDateString('en-US',{weekday:'short',timeZone:'UTC'})}</div></td>${cols.map(a=>`<td class="numeric">${!r.active?'—':money(a.type==='card'?-r.balances[a.name]:r.balances[a.name])}</td>`).join('')}<td class="numeric">${!r.active?'—':money(r.income)}</td><td class="numeric">${!r.active?'—':money(r.outflow)}</td><td class="numeric">${!r.active?'—':money(r.bank)}</td><td class="numeric">${!r.active?'—':money(r.debt)}</td><td>${r.events.length?r.events.map(e=>`<div class="secondary">${esc(e.name)} (${fmt(e.amount)})</div>`).join(''):r.active?'—':'Before snapshot'}</td></tr>`).join('')}</tbody></table></div></div>`}
+function budgetsPage(){let rows=CATEGORIES;return `<div class="note">Budgets are optional monthly caps, not automatic transactions. Set them in this table, then compare each month in Monthly Review. No old budget amounts were imported. Enter new monthly targets from November 2026 onward.</div><div class="panel"><div class="section-top"><h2>Category budgets per month</h2><button class="btn primary" data-act="saveBudgets">Save budgets</button></div><div class="scroll"><table class="tbl"><thead><tr><th>Category</th><th>Classification</th><th class="numeric">Monthly budget ($)</th><th>Notes</th></tr></thead><tbody>${rows.map(c=>`<tr><td><b>${esc(c)}</b></td><td>${c.startsWith('Income')||['Business Income','Other Income'].includes(c)?'Income':['Savings / Transfer','Credit Card Payment'].includes(c)?'Transfer (not expense)':'Expense'}</td><td class="numeric"><input type="number" class="mini-input money" min="0" step="0.01" data-budget="${esc(c)}" placeholder="Optional" value="${esc(state.budgets[c]??'')}"></td><td class="muted"></td></tr>`).join('')}</tbody></table></div></div>`}
+function accountReferences(name){
+ return {rules:state.rules.filter(r=>r.from===name||r.to===name),transactions:state.transactions.filter(t=>t.from===name||t.to===name),occurrences:state.occurrences.filter(o=>o.account===name||o.from===name||o.to===name)};
+}
+function administrationPage(){
+ const active=activeAccounts(),archived=state.accounts.filter(a=>a.archived),banks=active.filter(a=>a.type==='bank').length,cards=active.length-banks;
+ const table=accounts=>`<div class="scroll"><table class="tbl account-table"><thead><tr><th>Account</th><th>Type</th><th class="numeric">Opening balance</th><th>Linked records</th><th>Manage</th></tr></thead><tbody>${accounts.map(a=>{
+  const refs=accountReferences(a.name),linked=refs.rules.length+refs.transactions.length+refs.occurrences.length,zero=a.balance===null||a.balance===''||Number(a.balance)===0;
+  return `<tr><td><b>${esc(a.name)}</b>${a.archived?'<div class="secondary">Archived • excluded from new forecasts</div>':''}</td><td>${a.type==='bank'?'Bank account':'Credit card'}</td><td class="numeric">${a.balance===null||a.balance===''?'Not set':fmt(a.balance)}</td><td>${refs.rules.length} recurring / ${refs.transactions.length} transactions</td><td><div class="manage-actions"><button class="btn small" data-act="editAccount" data-id="${esc(a.id)}">Edit</button> <button class="btn small ${a.archived?'':'danger'}" data-act="${a.archived?'restoreAccount':'archiveAccount'}" data-id="${esc(a.id)}">${a.archived?'Restore':'Archive'}</button> <button class="btn small danger" data-act="deleteAccount" data-id="${esc(a.id)}" ${linked||!zero?'disabled title="Account has linked records or an opening balance"':''}>Delete</button></div></td></tr>`
+ }).join('')||'<tr><td colspan="5" class="empty">No accounts in this group.</td></tr>'}</tbody></table></div>`;
+ return `<div class="note admin-instructions"><b>Manage your accounts in one place.</b> Add as many banks or cards as you need; rename or reclassify them here. Renaming automatically updates every existing transaction and recurring payment reference. Archived accounts disappear from active balances, forecasts and new-entry lists while their recorded transactions remain available for monthly history.</div>
+ <div class="panel"><div class="section-top"><h2>App appearance & navigation</h2></div>
+ <div class="field" style="max-width:530px"><label>App name (shown on sidebar and browser tab)</label><input id="newAppName" maxlength="55" value="${esc(state.ui.appName)}" placeholder="Finance Control Center"></div>
+ <div class="toolbar" style="margin-top:10px"><button class="btn primary" data-act="saveAppName">Save app name</button><button class="btn" data-act="toggleNavigationEdit">⚙ Edit navigation order</button></div>
+ <div id="navEditor" hidden><p class="subinfo">Drag any item by the grip to reorder the left navigation, or use ▲ / ▼ on phones. Changes automatically save to your shared Drive file.</p>
+ <ol class="admin-nav-list" id="navSortList">${state.ui.navOrder.map((key,i)=>`<li class="admin-nav-row" draggable="true" data-nav-item="${esc(key)}"><span class="grip" aria-hidden="true">⠿</span><span class="nav-title">${esc(views[key]?.[0]||key)}</span><span class="nav-buttons"><button class="btn small" aria-label="Move up" data-act="navUp" data-id="${esc(key)}" ${i===0?'disabled':''}>▲</button><button class="btn small" aria-label="Move down" data-act="navDown" data-id="${esc(key)}" ${i===state.ui.navOrder.length-1?'disabled':''}>▼</button></span></li>`).join('')}</ol></div></div>
+ <div class="stats">${kpi('Active bank accounts',banks,'Included in cash balances')}${kpi('Active credit cards',cards,'Included in card debt')}${kpi('Archived accounts',archived.length,'Can be restored anytime')}${kpi('Total accounts saved',state.accounts.length,'Active plus archived')}</div>
+ <div class="panel"><div class="section-top"><h2>Active accounts</h2><div class="toolbar"><button class="btn primary" data-act="addBankAccount">＋ Add bank account</button><button class="btn primary" data-act="addCardAccount">＋ Add credit card</button></div></div>${table(active)}</div>
+ <div class="panel"><div class="section-top"><h2>Archived accounts</h2><span class="tag">Historical references are preserved</span></div>${table(archived)}</div>
+ <div class="panel"><h2>Safe removal guidelines</h2><div class="help-cards"><div class="help-card"><h3>Archive (reversible)</h3><p>First clear any nonzero opening balance and disable or reassign active recurring payments and planned transactions. After archiving, existing posted transaction history and disabled rules remain preserved. Restore whenever needed.</p></div><div class="help-card"><h3>Delete (permanent)</h3><p>Available only for accounts with no attached rules or transactions and no opening balance owed or held. Use Archive for accounts that have records. Export a JSON backup before major changes.</p></div></div></div>`;
+}
+function openAccount(id,type='bank'){
+ const orig=state.accounts.find(a=>a.id===id),edit=!!orig;
+ if(id&&!orig)return alert('Account not found.');
+ const a=orig||{name:'',type,balance:null};
+ const form=`<form id="editForm"><div class="form-grid">${formField('Account name','name','text',a.name,'required maxlength="90"')}<div class="field"><label>Account type</label><select name="type"><option value="bank" ${a.type==='bank'?'selected':''}>Bank account (checking / savings)</option><option value="card" ${a.type==='card'?'selected':''}>Credit card (amount owed)</option></select></div>${formField('Snapshot balance / card amount owed ($)','balance','number',a.balance===null||a.balance===''?'':a.balance,'min="0" step="0.01" placeholder="Optional"')}</div><div class="note">Use a positive balance for bank funds or positive amount owed for credit cards. Blank means not yet verified. Renaming also updates all linked transactions and recurring payments. A type change requires a zero or blank balance to prevent reversing a bank/card balance accidentally.</div><div class="form-actions">${closeBtn()}<button class="btn primary" type="submit">${edit?'Save account':'Create account'}</button></div></form>`;
+ openModal(edit?'Edit account':'Add account',form,f=>{
+  const name=f.name.trim().replace(/\s+/g,' '),v=f.balance.trim();
+  if(!name||name.length>90)throw Error('Enter an account name (up to 90 characters).');
+  if(name.toLowerCase()==='external')throw Error('The name External is reserved for money coming into or going out of your accounts.');
+  if(state.accounts.some(x=>x.id!==id&&x.name.toLocaleLowerCase()===name.toLocaleLowerCase()))throw Error('Another active or archived account already uses this name.');
+  if(!['bank','card'].includes(f.type))throw Error('Choose bank account or credit card.');
+  if(v!==''&&(!Number.isFinite(+v)||+v<0))throw Error('The opening balance must be a positive number or blank.');
+  const balance=v===''?null:+v;
+  if(edit){
+   if(a.type!==f.type&&a.balance!==null&&a.balance!==''&&+a.balance!==0)throw Error('To change a bank account into a card (or vice versa), first set its opening balance to zero, save, and try again.');
+   const old=a.name;
+   a.name=name;a.type=f.type;a.balance=balance;
+   if(old!==name){for(const record of [...state.rules,...state.transactions]){if(record.from===old)record.from=name;if(record.to===old)record.to=name}for(const o of state.occurrences){if(o.account===old)o.account=name;if(o.from===old)o.from=name;if(o.to===old)o.to=name;}}
+  }else state.accounts.push({id:'acct-'+tick(),name,type:f.type,balance,archived:false});
+ });
+}
+function archiveAccount(id){
+ const a=state.accounts.find(x=>x.id===id);if(!a||a.archived)return;
+ const refs=accountReferences(a.name),activeRules=refs.rules.filter(r=>r.active),planned=refs.transactions.filter(t=>t.status==='Planned');
+ if(a.balance!==null&&a.balance!==''&&+a.balance!==0)return alert('This account still has a nonzero starting balance. Settle or transfer the funds/debt, then set the opening balance to zero before archiving.');
+ if(activeRules.length||planned.length)return alert('This account has '+activeRules.length+' active recurring payment(s) and '+planned.length+' planned transaction(s). Disable, edit, or move those items to another account before archiving.');
+ if(!confirm('Archive "'+a.name+'"? It will disappear from active balances and new payments, but its past posted records and inactive rules will be preserved.'))return;
+ a.archived=true;save();render();
+}
+function restoreAccount(id){const a=state.accounts.find(x=>x.id===id);if(!a||!a.archived)return;a.archived=false;save();render()}
+function deleteAccount(id){
+ const a=state.accounts.find(x=>x.id===id);if(!a)return;
+ const refs=accountReferences(a.name);
+ if(refs.rules.length||refs.transactions.length||refs.occurrences.length)return alert('This account is linked to recurring payments or transactions. Archive it instead so existing history is not deleted.');
+ if(a.balance!==null&&a.balance!==''&&+a.balance!==0)return alert('Set its starting balance to zero before deleting.');
+ if(!confirm('Permanently delete "'+a.name+'"? This cannot be undone without a backup.'))return;
+ state.accounts=state.accounts.filter(x=>x.id!==id);save();render();
+}
+function settingsPage(){const storage=`<div class="note"><b>Shared Drive file via Google Drive API.</b> You are signed in as <b>${esc(cloudUserEmail||'not connected')}</b>. The shared source of truth is <code>Finance_Control_Center_Data.json</code> in your private Drive folder, selected by each Google account through Google Picker. This site runs on HTTPS hosting and no longer requires Apps Script. Changes from other devices are checked roughly every 20 seconds when there are no unsaved local changes. <b>No bank credentials are stored.</b></div>`;
+  return `${storage}<div class="panel"><h2>Google Drive sync status</h2><p>Account: <b>${esc(cloudUserEmail||'Not signed in')}</b><br>Data file: <b>${esc(selectedFileName||'None selected')}</b><br>Revision: <b>${syncRevision}</b> • Last saved: <b>${esc(syncLastAt||'Not yet saved')}</b></p><p>${syncConflict?'Conflict detected. Download a backup before reloading.':'No guaranteed atomic write lock exists on the shared JSON file. Avoid editing from two devices at the same moment. Verify Saved to Drive ✓ after changes.'}</p><div class="toolbar"><button class="btn primary" data-act="reloadCloud">Reload latest shared data</button><button class="btn" data-act="exportJson">Download safety backup</button></div></div>
+<div class="panel"><h2>Backups, migration and Excel exports</h2><div class="pill-row"><button class="btn primary" data-act="exportJson">Download all data (.json)</button><label class="btn" style="cursor:pointer">Import prior JSON backup <input id="importJson" type="file" accept=".json,application/json" class="hidden"></label><button class="btn" data-act="exportTx">Transactions to Excel (.csv)</button><button class="btn" data-act="exportMonthly">Monthly forecast (.csv)</button><button class="btn" data-act="exportRules">Recurring rules (.csv)</button></div><div class="subinfo">The backup includes accounts, starting balances, payment occurrences and actual costs, recurring rules, and budgets. Import overwrites the <b>entire</b> ${CLOUD?'shared Drive dataset':'local browser dataset'}. Keep independent JSON backups.</div></div>
+ <div class="panel"><h2>Tracker details</h2><p class="subinfo"><b>Card accounting fix: November 12, 2026.</b> External → card charges increase debt and count as expenses; bank → card payments reduce debt without adding expense.</p><p>Opening balance snapshot: <b>${esc(state.asOf)}</b>. Forecast: <b>${state.horizon} years</b>. Active accounts: <b>${activeAccounts().length}</b>. Archived accounts: <b>${state.accounts.length-activeAccounts().length}</b>. Recurring rules: <b>${state.rules.length}</b>. One-off transactions: <b>${state.transactions.length}</b>. Recurring occurrence adjustments: <b>${state.occurrences.length}</b>.</p><button class="btn danger" data-act="reset">${CLOUD?'Reset shared Drive data':'Reset all local data'}</button></div>
+ <div class="panel"><h2>Using the tracker</h2><div class="help-cards">${[['1. Verify balances','Set a single as-of date shared by all accounts; enter exact bank cash or positive credit-card debt on that date.'],['2. Add schedules','Recurring payments default to today and include an amount, first due date, frequency, category and paying/receiving account.'],['3. Use Payment Ledger','In a selected month, enter the actual cost, actual payment date, paying account, and Posted status. Save each row. Skipping a recurring occurrence does not delete its rule.'],['4. Keep forecasts accurate','Actual payments dated after the balance snapshot update forecast balances. When updating the starting balances to a newer snapshot date, payments at or before that date are not deducted twice.'],['5. Compare estimated vs actual','See posted costs in Monthly Review or detailed payments in Payment Ledger. External → credit card purchases count as expenses and increase the amount owed. Bank → credit card payments are transfers, not additional expenses.'],['6. Avoid collisions','Drive checks for other-device edits before saving, but simultaneous writes can still race. If a conflict appears, download your local JSON, reload shared data, then re-enter the conflicting edits.'],['7. Keep safety backups','Download a JSON backup after important changes; Google Drive sync is not a replacement for independent backups.'],['8. Manage accounts','The Administration tab adds, renames, archives, restores and safely deletes accounts.']].map(([h,d])=>`<div class="help-card"><h3>${h}</h3><p>${d}</p></div>`).join('')}</div></div>`;
+}
+const views={dashboard:['Dashboard','Accounts, cash flow and upcoming bills'],accounts:['Accounts & Balances','Verify balances for your active bank accounts and credit cards'],administration:['Administration','Add, rename, archive, restore or delete bank and credit card accounts'],ledger:['Payment Ledger','Monthly schedule with actual amounts, payment status, account and projected balance'],rules:['Recurring Payments','Build schedules for repeated charges, transfers and income'],transactions:['Transactions','One-time planned events and your posted history'],daily:['Daily Balances','Follow every account day by day in the selected month'],monthly:['Monthly Review','Actual spending, recurring bills, budgets and twenty-year outlook'],budgets:['Budgets','Monthly targets organized by expense category'],settings:['Backup & Help','Local security, exports, migration and reference guide']};
+
+const DEFAULT_WIDTHS={
+ ledger:[9,16,13,13,8,9,10,8,10,4],
+ accounts:[38,16,24,22],
+ rules:[8,17,17,11,9,9,8,7,8,6],
+ daily:[]
+};
+function tableControls(key){return `<div class="table-toolbar"><button class="btn small" data-act="fitTable" data-id="${key}" title="Rebalance columns to the available width">⤢ Fit columns</button><button class="btn small" data-act="resetColumns" data-id="${key}" title="Reset your custom column widths">↺ Reset widths</button></div>`}
+function prepareTables(){
+ document.querySelectorAll('table[data-table-id]').forEach(table=>{
+  let key=table.dataset.tableId,heads=[...table.querySelectorAll('thead tr:first-child th')],saved=state.ui.columnWidths[key]||{};
+  table.classList.add('resizable');
+  let cg=document.createElement('colgroup');
+  const fractions=DEFAULT_WIDTHS[key]?.length===heads.length?DEFAULT_WIDTHS[key]:heads.map(()=>100/heads.length);
+  heads.forEach((th,i)=>{
+    let col=document.createElement('col');col.dataset.idx=String(i);
+    const val=Number(saved[i]);
+    col.style.width=Number.isFinite(val)&&val>=40&&val<=1600?val+'px':(fractions[i]||10)+'%';
+    cg.append(col);
+    if(!th.querySelector('.col-resize')){
+      let orig=th.innerHTML;
+      th.innerHTML='<span class="col-label">'+orig+'</span><span class="col-resize" data-resize-col="'+i+'" role="separator" aria-orientation="vertical" title="Drag to resize column"></span>';
+    }
+  });
+  table.insertBefore(cg,table.firstChild);
+  table.style.minWidth='0';
+  if(Object.keys(saved).length){
+    const avail=table.parentElement.clientWidth;
+    let total=0;
+    [...cg.children].forEach((col,i)=>{if(saved[i])total+=Number(saved[i]);else total+=(fractions[i]||10)/100*avail;});
+    table.style.width=Math.max(avail,total)+'px';
+  }
+ });
+}
+let resizing=null;
+function startColumnResize(e){
+ const grip=e.target.closest('[data-resize-col]');if(!grip)return;
+ const table=grip.closest('table[data-table-id]');if(!table)return;
+ e.preventDefault();
+ let th=grip.closest('th'),idx=Number(grip.dataset.resizeCol),col=table.querySelectorAll('colgroup col')[idx];
+ resizing={table,key:table.dataset.tableId,col,idx,startX:e.clientX,startWidth:th.getBoundingClientRect().width,originalWidth:table.getBoundingClientRect().width};
+ grip.setPointerCapture?.(e.pointerId);grip.classList.add('dragging');document.body.classList.add('resizing-column');
+}
+function updateColumnResize(e){if(!resizing)return;const r=resizing;let width=Math.max(45,Math.min(850,r.startWidth+e.clientX-r.startX));r.col.style.width=width+'px';r.table.style.width=Math.max(r.table.parentElement.clientWidth,r.originalWidth+width-r.startWidth)+'px'}
+function endColumnResize(){if(!resizing)return;const r=resizing;resizing=null;document.body.classList.remove('resizing-column');document.querySelectorAll('.col-resize.dragging').forEach(x=>x.classList.remove('dragging'));
+ const widths={};r.table.querySelectorAll('colgroup col').forEach((col,i)=>widths[i]=Math.round(col.getBoundingClientRect().width));state.ui.columnWidths[r.key]=widths;save();}
+function fitColumns(key){
+ const table=document.querySelector(`table[data-table-id="${key}"]`);
+ if(!table)return;
+ const th=[...table.querySelectorAll('thead th')],room=Math.max(300,table.parentElement.clientWidth);
+ const original=th.map(x=>x.getBoundingClientRect().width),total=original.reduce((a,b)=>a+b,0)||room;
+ const minimum=key==='daily'?42:48;
+ const adjusted=original.map(x=>Math.max(minimum,Math.floor(x/total*room)));
+ // Remaining space goes to the longest useful text column.
+ let gap=room-adjusted.reduce((a,b)=>a+b,0);if(gap>0)adjusted[key==='accounts'?0:key==='ledger'?1:0]+=gap;
+ state.ui.columnWidths[key]=Object.fromEntries(adjusted.map((n,i)=>[i,n]));
+ save();render();
+}
+function resetColumns(key){delete state.ui.columnWidths[key];save();render()}
+let navEditing=false,dragNavigationKey='';
+function moveNavigation(key,target){let arr=[...state.ui.navOrder],a=arr.indexOf(key),b=arr.indexOf(target);if(a<0||b<0||a===b)return;arr.splice(a,1);arr.splice(b,0,key);state.ui.navOrder=arr;save();render();navEditing=true;let editor=$('navEditor');if(editor)editor.hidden=false;}
+function navShift(key,offset){let arr=[...state.ui.navOrder],i=arr.indexOf(key),j=i+offset;if(i<0||j<0||j>=arr.length)return;[arr[i],arr[j]]=[arr[j],arr[i]];state.ui.navOrder=arr;save();render();navEditing=true;if($('navEditor'))$('navEditor').hidden=false;}
+function onNavigationDragStart(e){const li=e.target.closest('[data-nav-item]');if(!li)return;dragNavigationKey=li.dataset.navItem;li.classList.add('dragging');if(e.dataTransfer){e.dataTransfer.effectAllowed='move';e.dataTransfer.setData('text/plain',dragNavigationKey)}}
+function onNavigationDragOver(e){const li=e.target.closest('[data-nav-item]');if(!li||!dragNavigationKey)return;e.preventDefault();document.querySelectorAll('.admin-nav-row.drag-over').forEach(n=>n.classList.remove('drag-over'));li.classList.add('drag-over')}
+function onNavigationDrop(e){const li=e.target.closest('[data-nav-item]');if(!li||!dragNavigationKey)return;e.preventDefault();let k=dragNavigationKey;dragNavigationKey='';moveNavigation(k,li.dataset.navItem)}
+function onNavigationDragEnd(){dragNavigationKey='';document.querySelectorAll('.admin-nav-row').forEach(x=>x.classList.remove('dragging','drag-over'))}
+
+function render(){let [name,desc]=views[tab];$('pageTitle').textContent=name;$('pageDesc').textContent=desc;const icons={dashboard:'◫',accounts:'▣',administration:'⚙',ledger:'▧',rules:'↻',transactions:'⇄',daily:'▤',monthly:'▥',budgets:'◎',settings:'⚙'};
+ $('appBrand').textContent=state.ui.appName;document.title=state.ui.appName+' — Finance Tracker';
+ $('menu').innerHTML=state.ui.navOrder.filter(id=>views[id]).map(id=>`<button class="nav ${id===tab?'active':''}" data-tab="${id}">${icons[id]} &nbsp; ${views[id][0]}</button>`).join('');$('view').innerHTML=({dashboard,accounts:accountPage,administration:administrationPage,ledger:ledgerPage,rules:rulesPage,transactions:txPage,daily:dailyPage,monthly:monthlyPage,budgets:budgetsPage,settings:settingsPage})[tab]();prepareTables();if(tab==='administration'&&navEditing&&$('navEditor'))$('navEditor').hidden=false;if(tab==='dashboard')requestAnimationFrame(drawChart)}
+function drawChart(){const c=$('mainChart');if(!c)return;let arr=calc().data.slice(0,12),ctx=c.getContext('2d'),w=c.clientWidth,h=c.clientHeight,dpr=window.devicePixelRatio||1;c.width=w*dpr;c.height=h*dpr;ctx.setTransform(dpr,0,0,dpr,0,0);ctx.clearRect(0,0,w,h);let margin={l:65,r:15,t:20,b:34},pw=w-margin.l-margin.r,ph=h-margin.t-margin.b;
+ let vals=arr.flatMap(r=>[r.bank,r.debt]);let lo=Math.min(0,...vals),hi=Math.max(1,...vals);if(hi===lo)hi=lo+1;let pad=(hi-lo)*.1;lo-=pad;hi+=pad;let y=v=>margin.t+(hi-v)/(hi-lo)*ph,x=i=>margin.l+(i/(Math.max(1,arr.length-1)))*pw;
+ ctx.strokeStyle='#dee7ee';ctx.lineWidth=1;ctx.fillStyle='#617487';ctx.font='11px system-ui';for(let i=0;i<5;i++){let v=lo+(hi-lo)*i/4,yy=y(v);ctx.beginPath();ctx.moveTo(margin.l,yy);ctx.lineTo(w-margin.r,yy);ctx.stroke();ctx.fillText((v/1000).toFixed(0)+'k',10,yy+4)}
+ for(let i=0;i<arr.length;i+=Math.max(1,Math.ceil(arr.length/6))){ctx.fillText(monthLabel(arr[i].key),Math.max(margin.l,x(i)-18),h-10)}
+ for(let [field,color] of [['bank','#07898a'],['debt','#b4663e']]){ctx.strokeStyle=color;ctx.lineWidth=2.5;ctx.beginPath();arr.forEach((r,i)=>i===0?ctx.moveTo(x(i),y(r[field])):ctx.lineTo(x(i),y(r[field])));ctx.stroke();for(let i=0;i<arr.length;i++){ctx.fillStyle=color;ctx.beginPath();ctx.arc(x(i),y(arr[i][field]),2.5,0,Math.PI*2);ctx.fill()}}}
+const modal=$('dialog');function openModal(title,html,cb){$('dialogTitle').textContent=title;$('dialogBody').innerHTML=html;modal.showModal();const form=$('editForm');if(form)form.addEventListener('submit',e=>{e.preventDefault();let formData=Object.fromEntries(new FormData(form).entries());try{cb(formData);modal.close();save();render()}catch(err){alert(err.message)}})}
+function closeBtn(){return '<button type="button" class="btn" data-act="closeModal">Cancel</button>'}
+function formField(label,name,type='text',value='',extra=''){return `<div class="field"><label>${esc(label)}</label><input name="${name}" type="${type}" value="${esc(value)}" ${extra}></div>`}
+function openTransaction(id){let t=state.transactions.find(x=>x.id===id),edit=!!t;t=t||{date:today(),status:'Planned',description:'',from:defaultFrom(),to:'External',category:'Other Expense',amount:'',reference:'',notes:''};let html=`<form id="editForm"><div class="form-grid">${formField('Date','date','date',t.date,'required')}<div class="field"><label>Status</label><select name="status">${['Planned','Posted','Cancelled'].map(x=>`<option ${t.status===x?'selected':''}>${x}</option>`).join('')}</select></div>${formField('Description','description','text',t.description,'required')}<div class="field"><label>Category</label><select name="category">${CATEGORIES.map(x=>`<option ${x===t.category?'selected':''}>${esc(x)}</option>`).join('')}</select></div><div class="field"><label>From account</label><select name="from">${accountOptions(t.from)}</select></div><div class="field"><label>To account</label><select name="to">${accountOptions(t.to)}</select></div>${formField('Positive amount ($)','amount','number',t.amount,'min="0.01" step="0.01" required')}${formField('Reference / check / ID','reference','text',t.reference||'')}</div><div style="margin-top:12px">${formField('Notes','notes','text',t.notes||'')}</div><div class="note" style="margin-top:12px"><b>Card purchases:</b> From External → To AMEX (or another card) increases the card debt and counts as an expense. <b>Card payments:</b> From bank → To card reduces the amount owed without creating another expense.</div><div class="form-actions">${closeBtn()}<button class="btn primary" type="submit">${edit?'Save changes':'Add transaction'}</button></div></form>`;
+ openModal(edit?'Edit one-time transaction':'Add one-time transaction',html,f=>{if(f.from===f.to)throw Error('From and To accounts must be different.');if(+f.amount<=0)throw Error('Amount must be positive.');if(f.status==='Planned'&&!activeEndpoints(f))throw Error('A planned transaction must use active accounts. Restore an archived account or choose another.');let v={id:id||tick(),...f,amount:+f.amount};if(edit)Object.assign(state.transactions.find(x=>x.id===id),v);else state.transactions.push(v)})}
+function openRule(id){let t=state.rules.find(x=>x.id===id),edit=!!t;t=t||{name:'',active:true,from:defaultFrom(),to:'External',category:'Utilities',amount:'',frequency:'monthly',start:today(),end:'',notes:''};let html=`<form id="editForm"><div class="form-grid">${formField('Payment / deposit name','name','text',t.name,'required')}<div class="field"><label>Active</label><select name="active"><option value="true" ${t.active?'selected':''}>Yes — forecast payments</option><option value="false" ${!t.active?'selected':''}>No — disabled</option></select></div><div class="field"><label>From account</label><select name="from">${accountOptions(t.from)}</select></div><div class="field"><label>To account</label><select name="to">${accountOptions(t.to)}</select></div><div class="field"><label>Category</label><select name="category">${CATEGORIES.map(x=>`<option ${x===t.category?'selected':''}>${esc(x)}</option>`).join('')}</select></div>${formField('Positive amount ($)','amount','number',t.amount,'min="0.01" step="0.01" required')}<div class="field"><label>Repeats</label><select name="frequency">${Object.entries(FREQ).map(([k,v])=>`<option value="${k}" ${k===t.frequency?'selected':''}>${esc(v)}</option>`).join('')}</select></div>${formField('First due date','start','date',t.start,'required')}${formField('Last due date (optional)','end','date',t.end||'')}${formField('Notes / reference','notes','text',t.notes||'')}</div><div class="note" style="margin-top:12px"><b>Card purchases:</b> From External → To AMEX (or another card) increases the card debt and counts as an expense. <b>Card payments:</b> From bank → To card reduces the amount owed without creating another expense.</div><div class="form-actions">${closeBtn()}<button type="submit" class="btn primary">${edit?'Save rule':'Add recurring payment'}</button></div></form>`;
+ openModal(edit?'Edit recurring rule':'New recurring payment',html,f=>{if(f.from===f.to)throw Error('From and To account cannot be the same.');if(+f.amount<=0)throw Error('Amount must be positive.');if(f.end&&f.end<f.start)throw Error('End date cannot precede the first due date.');if(f.active==='true'&&!activeEndpoints(f))throw Error('An active recurring rule must use active accounts. Restore the archived account or choose another.');let v={id:id||tick(),...f,amount:+f.amount,active:f.active==='true'};if(edit)Object.assign(state.rules.find(x=>x.id===id),v);else state.rules.push(v)})}
+function exportFile(name,text,type){const blob=new Blob([text],{type}),url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),2000)}
+function csv(records){return records.map(row=>row.map(v=>`"${String(v??'').replace(/"/g,'""')}"`).join(',')).join('\r\n')}
+function csvTx(){exportFile('Finance_Transactions.csv',csv([['Scheduled Date','Status','Description','From Account','To Account','Category','Amount USD (Actual if Posted)','Reference','Notes'],...state.transactions.map(t=>[t.date,t.status,t.description,t.from,t.to,t.category,t.status==='Posted'?actualOf(t):t.amount,t.reference,t.notes])]),'text/csv;charset=utf-8')}
+function csvRules(){exportFile('Finance_Recurring_Rules.csv',csv([['Active','Name','From','To','Category','Amount USD','Frequency','Start','End','Notes'],...state.rules.map(r=>[r.active?'Yes':'No',r.name,r.from,r.to,r.category,r.amount,FREQ[r.frequency],r.start,r.end,r.notes])]),'text/csv;charset=utf-8')}
+function csvMonths(){let rows=calc().data;exportFile('Finance_Monthly_Forecast.csv',csv([['Month','Posted income USD','Posted expenses USD','Planned income USD','Planned expenses USD','Recurring income USD','Recurring expenses USD','Future net USD',...allAccounts().map(x=>x+' closing signed USD'),'Bank Cash USD','Credit Debt Owed USD','Net position USD'],...rows.map(m=>[m.key,m.postedIncome,m.postedExpense,m.plannedIncome,m.plannedExpense,m.recIncome,m.recExpense,m.futureIncome-m.futureExpense,...activeAccounts().map(a=>m.end[a.name]),m.bank,m.debt,m.net])]),'text/csv;charset=utf-8')}
+function exportJson(){exportFile('Finance_Full_Backup_'+state.asOf+'.json',JSON.stringify({...state,backupCreated:new Date().toISOString()},null,2),'application/json;charset=utf-8')}
+function saveDisplay(){cache=null;cacheSig='';}
+function shiftMonth(n){state.viewMonth=addMonths(state.viewMonth,n);saveDisplay();render()}
+function changeMonth(v){if(!/^\d{4}-\d{2}$/.test(v))return;state.viewMonth=v;saveDisplay();render()}
+function act(name,el){let id=el?.dataset.id;
+ switch(name){case'addTransaction':case'quickAdd':openTransaction();break;case'saveLedger':saveLedger(el);break;case'reloadCloud':reloadFromCloud();break;case'editTransaction':openTransaction(id);break;case'deleteTransaction':if(confirm('Delete this transaction?')){state.transactions=state.transactions.filter(x=>x.id!==id);save();render()}break;
+ case'saveAppName':{const name=$('newAppName')?.value?.trim().replace(/\s+/g,' ');if(!name||name.length>55)return alert('Enter an app name up to 55 characters.');state.ui.appName=name;save();render();break}
+ case'toggleNavigationEdit':navEditing=!navEditing;if($('navEditor'))$('navEditor').hidden=!navEditing;break;
+ case'navUp':navShift(id,-1);break;case'navDown':navShift(id,1);break;
+ case'fitTable':fitColumns(id);break;case'resetColumns':resetColumns(id);break;
+ case'addBankAccount':openAccount(null,'bank');break;case'addCardAccount':openAccount(null,'card');break;case'editAccount':openAccount(id);break;case'archiveAccount':archiveAccount(id);break;case'restoreAccount':restoreAccount(id);break;case'deleteAccount':deleteAccount(id);break;
+ case'addRule':openRule();break;case'editRule':openRule(id);break;case'toggleRule':{let r=state.rules.find(x=>x.id===id);if(r){if(!r.active&&!activeEndpoints(r))return alert('Restore the archived account or edit this payment to use active accounts before enabling.');r.active=!r.active;save();render()}break}case'deleteRule':if(state.occurrences.some(o=>o.ruleId===id)){alert('This recurring rule has saved ledger adjustments or actual payments. Disable it instead so those records remain intact.');break;}if(confirm('Delete this recurring rule and its projected payments?')){state.rules=state.rules.filter(x=>x.id!==id);save();render()}break;
+ case'saveAccounts':{let els=[...document.querySelectorAll('[data-account-id]')];let updates=[];for(const x of els){const a=state.accounts.find(a=>a.id===x.dataset.accountId),v=x.value.trim();if(!a)continue;if(v!==''&&(!Number.isFinite(+v)||+v<0))return alert('Enter a positive numeric balance for '+a.name);updates.push([a,v===''?null:+v])}for(const [a,v] of updates)a.balance=v;save();render();break}
+ case'saveSettings':{const a=$('asOf').value; if(!a)return alert('Enter a valid balance snapshot date.');state.asOf=a;state.horizon=+$('horizon').value;state.lowBalance=Math.max(0,+$('lowBalance').value||0);save();render();break}
+ case'saveBudgets':for(let el of document.querySelectorAll('[data-budget]')){let v=el.value.trim();if(v==='')delete state.budgets[el.dataset.budget];else if(+v>=0)state.budgets[el.dataset.budget]=+v;else return alert('Budget cannot be negative.')}save();render();break;
+ case'prevMonth':shiftMonth(-1);break;case'nextMonth':shiftMonth(1);break;case'selectMonth':changeMonth(el.dataset.month);break;
+ case'exportTx':csvTx();break;case'exportMonthly':csvMonths();break;case'exportRules':csvRules();break;case'exportJson':exportJson();break;
+ case'reset':if(confirm('This will reset data'+(CLOUD?' in your SHARED Google Drive file':' in this browser')+'. Have you exported a JSON backup?')&&confirm('Confirm full reset. This cannot be undone without a backup.')){state=defaults();save();tab='dashboard';render()}break;case'closeModal':modal.close();break;
+ }}
+document.addEventListener('pointerdown',startColumnResize);document.addEventListener('pointermove',updateColumnResize);document.addEventListener('pointerup',endColumnResize);document.addEventListener('pointercancel',endColumnResize);
+ document.addEventListener('dragstart',onNavigationDragStart);document.addEventListener('dragover',onNavigationDragOver);document.addEventListener('drop',onNavigationDrop);document.addEventListener('dragend',onNavigationDragEnd);
+ document.addEventListener('click',e=>{let n=e.target.closest('[data-tab]');if(n){tab=n.dataset.tab;render();return}n=e.target.closest('[data-act]');if(n)act(n.dataset.act,n)});
+document.addEventListener('input',e=>{if(e.target.id==='ruleSearch'&&$('ruleList'))$('ruleList').innerHTML=ruleTable();if(e.target.id==='txSearch'&&$('txList'))$('txList').innerHTML=txTable()});
+document.addEventListener('change',e=>{if(e.target.id==='dailyScope'){state.ui.dailyScope=e.target.value;save();render()}if(e.target.id==='monthSelect')changeMonth(e.target.value);if(e.target.id==='hidePast'){state.hidePast=e.target.checked;saveDisplay();if($('monthList'))$('monthList').innerHTML=monthTable()}if(e.target.id==='ruleFilter'&&$('ruleList'))$('ruleList').innerHTML=ruleTable();if(['txStatus','txMonth'].includes(e.target.id)&&$('txList'))$('txList').innerHTML=txTable();if(e.target.id==='importJson'){let file=e.target.files?.[0];if(!file)return;let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);d=normalizeState(d);if(confirm('Importing will replace ALL current tracker data. Continue?')){state=d;save();tab='dashboard';render()}}catch(err){alert('Backup could not be loaded: '+err.message)}};reader.readAsText(file)}});
+$('focusToggle').onclick=()=>{document.body.classList.toggle('wide-view');$('focusToggle').textContent=document.body.classList.contains('wide-view')?'⇤ Exit focus':'⤢ Focus';render()};$('backupTop').onclick=exportJson;$('quickAdd').onclick=()=>openTransaction();window.addEventListener('resize',()=>{if(tab==='dashboard')drawChart()});render();startCloud();
+</script></body></html>
