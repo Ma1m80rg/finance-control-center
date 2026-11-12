@@ -667,7 +667,7 @@ function saveLedger(el){
    if(status==='Posted'&&(!Number.isFinite(effectiveAmount)||effectiveAmount<=0))return alert('Enter a positive actual amount or estimate before posting.');
    Object.assign(t,{from,to,status,actualDate,actualAmount:status==='Posted'?effectiveAmount:amount});
  }
- save();render();
+ save();render();return true;
 }
 function accountPage(){let openingMap=opening();return `<div class="note warn"><b>Balance snapshot rules:</b> Put the actual balance visible at the bank (positive) or the amount currently owed on the credit card (positive). Your date must be the date these balances were true. No previous-year transactions or projected balances were imported. Start in November 2026.</div><div class="panel"><div class="section-top"><h2>As-of date and planning settings</h2></div><div class="grid3"><div class="field"><label>Balances are accurate as of</label><input id="asOf" type="date" value="${esc(state.asOf)}"></div><div class="field"><label>Years forward</label><select id="horizon">${[5,10,15,20,25,30].map(n=>`<option value="${n}" ${state.horizon===n?'selected':''}>${n} years</option>`).join('')}</select></div><div class="field"><label>Low bank balance alert ($)</label><input id="lowBalance" type="number" min="0" step="10" value="${state.lowBalance}"></div></div><div style="margin-top:13px"><button class="btn primary" data-act="saveSettings">Save dates & settings</button></div></div><div class="panel"><div class="section-top"><h2>Verified balances — ${activeAccounts().length} active accounts</h2>${tableControls('accounts')}<button class="btn small" data-tab="administration">Manage accounts</button><button class="btn primary" data-act="saveAccounts">Save account balances</button></div><div class="scroll compact-grid"><table data-table-id="accounts" class="tbl resizable"><thead><tr><th>Account</th><th>Type</th><th class="numeric">Current bank balance / credit owed ($)</th><th class="numeric">Signed balance used by forecast</th></tr></thead><tbody>${activeAccounts().map(a=>`<tr><td><b>${esc(a.name)}</b></td><td>${a.type==='bank'?'Bank':'Credit card'}</td><td class="numeric"><input class="mini-input money" data-account-id="${esc(a.id)}" type="number" min="0" step="0.01" placeholder="Enter balance" value="${a.balance===null?'':a.balance}"></td><td class="numeric">${a.balance===null?'<span class="warn">Not entered</span>':money(openingMap[a.name])}</td></tr>`).join('')}</tbody></table></div></div><div class="note">Credit card balance OWED is positive in the input box, but negative in net-position math. Deposits increase a bank account; credit card purchases make the signed card balance more negative; transfers from a bank to a card bring the signed card balance closer to zero.</div>`}
 function monthSwitcher(){return `<div class="toolbar"><button class="btn small" data-act="prevMonth">◂ Previous</button>${monthPicker()}<button class="btn small" data-act="nextMonth">Next ▸</button><label class="check"><input type="checkbox" id="hidePast" ${state.hidePast?'checked':''}> Hide past months</label></div>`}
@@ -870,9 +870,20 @@ document.addEventListener('pointerdown',startColumnResize);document.addEventList
  document.addEventListener('click',e=>{let n=e.target.closest('[data-tab]');if(n){tab=n.dataset.tab;render();return}n=e.target.closest('[data-act]');if(n)act(n.dataset.act,n)});
 document.addEventListener('input',e=>{if(e.target.id==='ruleSearch'&&$('ruleList'))$('ruleList').innerHTML=ruleTable();if(e.target.id==='txSearch'&&$('txList'))$('txList').innerHTML=txTable()});
 document.addEventListener('change',e=>{
- if(e.target.matches('[data-role="status"]')&&e.target.value==='Posted'){
-   const row=e.target.closest('[data-ledger-row]'),actual=row?.querySelector('[data-role="actual"]');
-   if(actual&&actual.value.trim()===''&&Number(row.dataset.estimate)>0)actual.value=row.dataset.estimate;
+ if(e.target.matches('[data-role="status"]')){
+   const row=e.target.closest('[data-ledger-row]');
+   if(row){
+     // The Status dropdown commits all current row fields immediately.
+     // Posted also fills a blank Actual amount from the estimate before saving.
+     if(e.target.value==='Posted'){
+       const actual=row.querySelector('[data-role="actual"]');
+       if(actual&&actual.value.trim()===''&&Number(row.dataset.estimate)>0)actual.value=row.dataset.estimate;
+     }
+     const didSave=saveLedger(e.target);
+     // Restore the saved state if validation or a confirmation prevented the change.
+     if(!didSave&&!document.querySelector('#dialog[open]'))render();
+   }
+   return;
  }
  if(e.target.id==='dailyScope'){state.ui.dailyScope=e.target.value;save();render()}if(e.target.id==='monthSelect')changeMonth(e.target.value);if(e.target.id==='hidePast'){state.hidePast=e.target.checked;saveDisplay();if($('monthList'))$('monthList').innerHTML=monthTable()}if(e.target.id==='ruleFilter'&&$('ruleList'))$('ruleList').innerHTML=ruleTable();if(['txStatus','txMonth'].includes(e.target.id)&&$('txList'))$('txList').innerHTML=txTable();if(e.target.id==='importJson'){let file=e.target.files?.[0];if(!file)return;let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);d=normalizeState(d);if(confirm('Importing will replace ALL current tracker data. Continue?')){state=d;save();tab='dashboard';render()}}catch(err){alert('Backup could not be loaded: '+err.message)}};reader.readAsText(file)}});
 
