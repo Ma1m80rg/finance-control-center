@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="192" height="192" viewBox="0 0 512 512" role="img" aria-labelledby="title"><title id="title">Finance Control Center</title>
+<rect width="512" height="512" rx="112" fill="#132b43"/>
+<rect x="72" y="72" width="368" height="368" rx="96" fill="#119d9d"/>
+<path d="M256 126 386 256 256 386 126 256Z" fill="none" stroke="#fff" stroke-width="24" stroke-linejoin="round"/>
+<path d="M256 194 318 256 256 318 194 256Z" fill="#fff"/>
+<path d="M256 222v68" stroke="#119d9d" stroke-width="18" stroke-linecap="round"/>
+</svg>
