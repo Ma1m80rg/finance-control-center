@@ -1,6 +1,12 @@
 <!DOCTYPE html>
 <html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Finance Control Center — Payment Ledger & Drive Sync</title>
+<meta name="theme-color" content="#132b43">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
+<meta name="apple-mobile-web-app-title" content="Finances">
+<link rel="manifest" href="./manifest.webmanifest">
+<link rel="icon" type="image/svg+xml" href="./icon-192.svg">
 <style>
 :root{--ink:#172c40;--ink2:#253f56;--muted:#627387;--teal:#087e82;--teal2:#dff5f2;--blue:#1d4ed8;--pale:#f5f8fc;--line:#dbe4eb;--white:#fff;--red:#b42d35;--amber:#f0b33e;--accent:#dff5f2;--shadow:0 7px 26px rgba(17,43,72,.06)}
 *{box-sizing:border-box}body{margin:0;background:#f3f7fa;font:14px/1.44 system-ui,-apple-system,"Segoe UI",sans-serif;color:var(--ink)}button,input,select,textarea{font:inherit}button{cursor:pointer}a{color:var(--teal)}.app{display:flex;min-height:100vh}.side{width:239px;flex:none;background:linear-gradient(165deg,#132b43,#203c54);color:white;padding:23px 14px;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;gap:9px}.logo{display:flex;align-items:center;gap:10px;font-weight:800;font-size:17px;letter-spacing:-.5px;padding:4px 9px 22px}.gem{height:32px;width:32px;border-radius:11px;background:#13a9a6;display:grid;place-items:center;color:white;font-size:19px}.nav{border:0;width:100%;text-align:left;background:transparent;color:#dce8f3;border-radius:9px;padding:12px 13px;display:flex;gap:10px;align-items:center}.nav:hover,.nav.active{background:#ffffff20;color:white}.nav.active{box-shadow:inset 3px 0 #3cc7be}.side-bottom{margin-top:auto;font-size:11px;color:#bed0e0;padding:11px;line-height:1.6}.main{flex:1;min-width:0;padding:32px clamp(15px,3vw,48px) 50px}.top{display:flex;gap:15px;align-items:flex-start;justify-content:space-between;margin-bottom:20px;flex-wrap:wrap}.top h1{margin:0;font-size:27px;letter-spacing:-1px}.subtitle{color:var(--muted);margin:5px 0 0}.controls{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.btn{border:1px solid var(--line);background:white;color:var(--ink);padding:10px 14px;border-radius:9px;font-weight:650;white-space:nowrap}.btn:hover{background:#eef5f9}.btn.primary{background:var(--teal);color:white;border-color:var(--teal)}.btn.primary:hover{background:#096d71}.btn.danger{border-color:#efc0c3;color:var(--red)}.btn.small{padding:6px 9px;font-size:12px}.btn:disabled{opacity:.45;cursor:not-allowed}.panel{background:white;border:1px solid var(--line);border-radius:13px;box-shadow:var(--shadow);padding:20px;margin:16px 0}.panel h2{font-size:17px;letter-spacing:-.3px;margin:0 0 12px}.panel h3{margin:0 0 10px;font-size:15px}.stats{display:grid;grid-template-columns:repeat(4,minmax(150px,1fr));gap:14px;margin:17px 0}.stat{border:1px solid var(--line);background:#fff;border-radius:13px;padding:18px 19px;box-shadow:var(--shadow)}.stat label{display:block;color:var(--muted);font-size:12px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;margin-bottom:7px}.stat strong{font-size:24px;letter-spacing:-1px}.stat small{display:block;color:var(--muted);margin-top:6px}.neg{color:var(--red)}.good{color:var(--teal)}.warn{color:#a86400}.muted{color:var(--muted)}.tag{font-size:11px;display:inline-block;padding:3px 7px;background:#edf2f7;border-radius:20px;color:#41596c;font-weight:700}.tag.on{background:#dbf5e9;color:#13724e}.tag.off{background:#fff1d8;color:#946000}.note{background:#ecf7f6;border:1px solid #c9e7e4;border-radius:10px;color:#214f56;padding:12px 15px;margin:15px 0}.note.warn{background:#fff4d9;border-color:#eedca8;color:#79530a}.note.alert{background:#fcebec;border-color:#f4c7ca;color:#9b2530}.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(320px,1fr);gap:16px}.scroll{overflow:auto;border:1px solid var(--line);border-radius:10px;max-width:100%}.tbl{border-collapse:separate;border-spacing:0;min-width:100%;font-size:12px}.tbl th{white-space:nowrap;text-align:left;background:#eff4f8;color:#334d64;font-weight:750;position:sticky;top:0;z-index:1;padding:11px;border-bottom:1px solid var(--line)}.tbl td{padding:10px 11px;white-space:nowrap;border-bottom:1px solid #edf1f5}.tbl tr:last-child td{border-bottom:0}.tbl tbody tr:hover{background:#f7fafb}.tbl .numeric{text-align:right;font-variant-numeric:tabular-nums}.tbl th.numeric{text-align:right}.tbl .secondary{color:var(--muted);font-size:11px}.tbl tfoot td{font-weight:800;background:#eaf5f4}.mini-input{width:125px;max-width:100%;padding:8px 9px;border:1px solid #c8d9e4;border-radius:7px}.mini-input.money{width:150px;text-align:right;color:#225ac6}.datepick{border:1px solid var(--line);padding:9px;border-radius:8px;background:white;color:var(--ink)}.field{display:flex;flex-direction:column;gap:6px}.field label{color:#496074;font-size:12px;font-weight:750}.field input,.field select,.field textarea{width:100%;padding:10px 11px;border:1px solid #c8d7e2;background:white;color:var(--ink);border-radius:8px}.field input:focus,.field select:focus{outline:2px solid #bce8e3;border-color:#089298}.field textarea{min-height:68px;resize:vertical}.form-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.form-actions{display:flex;justify-content:flex-end;gap:9px;margin-top:18px}.section-top{display:flex;justify-content:space-between;gap:9px;align-items:center;flex-wrap:wrap;margin-bottom:10px}.section-top h2{margin:0}.filter{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.filter select,.filter input{border:1px solid var(--line);border-radius:8px;background:white;padding:8px 10px;max-width:220px}.chart{width:100%;height:270px;display:block}.account-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.account-card{border:1px solid var(--line);padding:12px;border-radius:10px;display:flex;justify-content:space-between;align-items:center;gap:10px}.account-card span{font-size:12px;color:var(--muted)}.account-card strong{display:block;font-size:16px}.empty{color:var(--muted);padding:30px;text-align:center}.right{text-align:right}.numb{font-variant-numeric:tabular-nums}.pill-row{display:flex;gap:6px;flex-wrap:wrap}.pill{border:1px solid var(--line);background:white;border-radius:20px;padding:7px 11px}.pill.selected{background:#d9f3f0;border-color:#63beb7;font-weight:750}.manage-actions{display:flex;gap:6px;flex-wrap:wrap}.manage-actions .btn{white-space:nowrap}.account-table .secondary{white-space:normal;max-width:400px}.admin-instructions{line-height:1.6}.legend{display:flex;gap:16px;color:var(--muted);font-size:12px;flex-wrap:wrap}.dot{display:inline-block;width:9px;height:9px;border-radius:50%;margin-right:5px}.dialog{border:0;border-radius:16px;padding:0;max-width:650px;width:calc(100% - 28px);box-shadow:0 24px 85px #101c3099}.dialog::backdrop{background:#10243985}.dialog-head{background:#f1f7fa;padding:19px 22px;border-bottom:1px solid var(--line);font-size:18px;font-weight:800}.dialog-body{padding:22px;max-height:72vh;overflow:auto}.dashboard-graph{position:relative}.mutedbar{display:flex;justify-content:space-between;gap:16px;align-items:center;flex-wrap:wrap;margin:10px 0;color:var(--muted);font-size:12px}.banner{display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:8px}.chip{padding:5px 9px;border-radius:7px;background:#e1f6ef;color:#1f795d;font-weight:750;font-size:12px}.chip.warn{background:#fff1d7;color:#946000}.hidden{display:none!important}.footer{margin-top:25px;color:#77899a;font-size:12px}.subinfo{padding:10px 0;color:var(--muted)}.check{display:flex;align-items:center;gap:8px}.check input{accent-color:var(--teal)}.grow{flex:1}.toolbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap}.totals{background:#eef8f7;font-weight:800}.badrow{background:#fff5f5}.foottext{font-size:12px;color:var(--muted)}.help-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}.help-card{border-left:3px solid var(--teal);padding:10px 15px;background:#f4faf9;border-radius:7px}.help-card h3{margin:0 0 5px}.help-card p{margin:0;color:var(--muted)}
@@ -20,7 +26,18 @@
 .auth-card{background:#fff;color:#163047;max-width:620px;width:100%;max-height:92vh;overflow:auto;border-radius:18px;padding:30px;box-shadow:0 20px 75px #0005}
 .auth-card h2{margin:0 0 10px;font-size:26px}.auth-card p{color:#496277;line-height:1.55}
 .auth-card .auth-actions{display:flex;flex-wrap:wrap;gap:9px;margin:16px 0}.auth-card .auth-status{background:#eff5fa;border-radius:8px;padding:12px;font-weight:700;white-space:pre-wrap;overflow-wrap:anywhere}
-.auth-card .auth-note{font-size:12px}.auth-gate[hidden]{display:none!important}
+.auth-card .auth-note{font-size:12px}
+.auth-card .auth-remember{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:650;color:#345268;margin:8px 0 14px}
+.auth-card .auth-remember input{width:17px;height:17px;accent-color:#087e82}
+.auth-card .auth-extras{display:flex;gap:12px;align-items:center;flex-wrap:wrap;margin-top:16px;padding-top:12px;border-top:1px solid #e2eaf0}
+.auth-card .auth-extras .btn{font-size:12px;padding:8px 12px}
+.auth-card details.auth-note{margin-top:14px;border-top:1px solid #e2eaf0;padding-top:10px}
+.auth-card details.auth-note summary{cursor:pointer;font-weight:700}
+#installHelpDialog{border:0;border-radius:16px;width:min(540px,calc(100vw - 24px));padding:22px;background:#fff;box-shadow:0 20px 90px #0005;color:#163047}
+#installHelpDialog::backdrop{background:rgba(10,30,49,.6)}
+#installHelpDialog h2{margin:0 0 12px;font-size:21px}
+#installHelpDialog p{color:#445e74;line-height:1.6}
+.auth-gate[hidden]{display:none!important}
 @media(max-width:700px){.auth-card{padding:20px}}
 
 /* Comfortable desktop density with optional full-width focus mode. Column sizes are user-adjustable. */
@@ -84,12 +101,17 @@ body.wide-view .ledger-shell{max-height:calc(100vh - 200px)}
 
 </style></head><body><div class="app">
 <aside class="side"><div class="logo"><span class="gem">◈</span><span id="appBrand">Finance Control Center</span></div><nav class="menu" id="menu"></nav><div class="side-bottom"><strong>GOOGLE DRIVE SYNC</strong><br>Connected through the secure Google Drive API.<br><b>Export a JSON backup regularly.</b><br>No banking credentials are stored.</div></aside>
-<main class="main"><div class="top"><div><h1 id="pageTitle"></h1><p class="subtitle" id="pageDesc"></p></div><div class="controls"><button class="btn focus-toggle" id="focusToggle" title="Expand tables across the full window">⤢ Focus</button><span id="syncIndicator" class="sync-indicator" role="status" aria-live="polite">LOCAL • Not synced</span><button class="btn" id="chooseNewFileTop" title="Choose different shared data file">☁ File</button><button class="btn" id="switchGoogle" title="Choose Google account">⇄ Account</button><button class="btn" id="backupTop">↧ Backup data</button><button class="btn primary" id="quickAdd">＋ Add transaction</button></div></div><div id="view"></div><div class="footer">Finance Control Center • Personal finance tracker • Hosted website with Google Drive API sync; open using your HTTPS site URL • No connection to any financial institution • Budget projections are estimates, not bank-confirmed balances.</div></main></div>
+<main class="main"><div class="top"><div><h1 id="pageTitle"></h1><p class="subtitle" id="pageDesc"></p></div><div class="controls"><button class="btn focus-toggle" id="focusToggle" title="Expand tables across the full window">⤢ Focus</button><button class="btn" id="installAppTop" title="Install a shortcut on this computer or phone">⬇ Install app</button><span id="syncIndicator" class="sync-indicator" role="status" aria-live="polite">LOCAL • Not synced</span><button class="btn" id="chooseNewFileTop" title="Choose different shared data file">☁ File</button><button class="btn" id="switchGoogle" title="Choose Google account">⇄ Account</button><button class="btn" id="backupTop">↧ Backup data</button><button class="btn primary" id="quickAdd">＋ Add transaction</button></div></div><div id="view"></div><div class="footer">Finance Control Center • Personal finance tracker • Hosted website with Google Drive API sync; open using your HTTPS site URL • No connection to any financial institution • Budget projections are estimates, not bank-confirmed balances.</div></main></div>
 <dialog class="dialog" id="dialog"><div class="dialog-head" id="dialogTitle">Edit</div><div class="dialog-body" id="dialogBody"></div></dialog>
 <script src="./config.js"></script>
 <script async defer src="https://accounts.google.com/gsi/client"></script>
 <script async defer src="https://apis.google.com/js/api.js"></script>
-<div id="cloudGate" class="auth-gate" role="dialog" aria-modal="true" aria-labelledby="gateHeading"><section class="auth-card"><h2 id="gateHeading">Connect Finance Control Center</h2><p>Choose a Google account that has <b>Editor</b> access to your shared finance data file. Choose the same JSON file on each computer or phone. Your data remains in your private Google Drive.</p><div id="gateStatus" class="auth-status" role="status">Ready to connect.</div><div id="gateAccount" style="margin-top:10px;font-weight:700"></div><div class="auth-actions"><button class="btn primary" id="googleConnect">1. Sign in / choose account</button><button class="btn" id="otherGoogleAccount" hidden>Use a different Google account</button><button class="btn" id="chooseDataFile" disabled>2. Choose shared JSON file</button><button class="btn" id="retryDataFile" hidden>Retry opening shared file</button></div><p class="auth-note"><b>First setup:</b> Upload <code>Finance_Control_Center_Data.json</code> into your private Google Drive Finances folder. Each authorized account must select that same file once through Google's file picker. Access is enforced by Google Drive sharing permissions.</p><p class="auth-note">If you previously used Apps Script, you can select its existing <code>Finance_Control_Center_Data.json</code> here instead of creating a second file. The JSON backup can also be imported after connecting.</p><p class="auth-note">The cloud app requires HTTPS hosting and the configured Google OAuth credentials. Opening this file directly from your computer or Google Drive preview does not enable sign-in.</p></section></div>
+<div id="cloudGate" class="auth-gate" role="dialog" aria-modal="true" aria-labelledby="gateHeading"><section class="auth-card"><h2 id="gateHeading">Connect Finance Control Center</h2><p>Choose a Google account that has <b>Editor</b> access to your shared finance data file. Choose the same JSON file on each computer or phone. Your data remains in your private Google Drive.</p><div id="gateStatus" class="auth-status" role="status">Ready to connect.</div><div id="gateAccount" style="margin-top:10px;font-weight:700"></div><div class="auth-actions"><button class="btn primary" id="googleConnect">Continue with Google</button><button class="btn" id="otherGoogleAccount" hidden>Use a different Google account</button><button class="btn" id="chooseDataFile" disabled>Choose shared JSON file</button><button class="btn" id="retryDataFile" hidden>Retry opening shared file</button></div>
+<label class="auth-remember"><input id="rememberGoogle" type="checkbox" checked> Remember this Google account on this device</label>
+<p class="auth-note">Your finances are saved in your private Google Drive file. Access is granted through Google when you connect.</p>
+<div class="auth-extras"><button class="btn" id="installAppGate" type="button">⬇ Install app / Add to Home Screen</button><span class="auth-note">Use it like an app on your computer or phone.</span></div>
+<details class="auth-note"><summary>First-time connection instructions</summary><p>Upload <code>Finance_Control_Center_Data.json</code> to your private Google Drive Finances folder, then choose it through Google's file picker. Every authorized Google account needs Editor access to that same file. On a new browser or phone, select the file once. You may also import your old JSON backup after connecting.</p></details></section></div>
+<dialog id="installHelpDialog" aria-labelledby="installDialogTitle"><h2 id="installDialogTitle">Install Finance Control Center</h2><p id="installDialogGuide"></p><p>Installing creates a shortcut. It does not copy your financial data or remove Google sign-in requirements. An internet connection is needed to read and sync your private Drive file.</p><button class="btn primary" id="installDialogClose" type="button">Got it</button></dialog>
 <script>
 'use strict';
 const STORE='finance_control_center_drive_api_emergency_v2';
@@ -152,10 +174,13 @@ function gateMessage(message){$('gateStatus').textContent=message;}
 function configured(){return DC.clientId&&DC.clientId.endsWith('.apps.googleusercontent.com')&&DC.apiKey&&!DC.apiKey.startsWith('YOUR_')&&/^\d+$/.test(String(DC.projectNumber||''));}
 function gateShow(message){$gate.hidden=false;if(message)gateMessage(message);$('gateAccount').textContent=cloudUserEmail?'Signed in: '+cloudUserEmail:'';}
 function gateHide(){$gate.hidden=true;}
-function lastGoogleAccount(){try{return localStorage.getItem(STORE+'_last_account')||'';}catch{return '';}}
+function shouldRememberAccount(){try{return localStorage.getItem(STORE+'_remember')!=='no';}catch{return true;}}
+function lastGoogleAccount(){if(!shouldRememberAccount())return '';try{return localStorage.getItem(STORE+'_last_account')||'';}catch{return '';}}
 function updateGoogleLoginButtons(){
  const email=lastGoogleAccount();
- $('googleConnect').textContent=email?'Continue as '+email:'1. Sign in / choose account';
+ $('rememberGoogle').checked=shouldRememberAccount();
+ $('gateHeading').textContent=email?'Welcome back':'Connect Finance Control Center';
+ $('googleConnect').textContent=email?'Continue as '+email:'Continue with Google';
  $('otherGoogleAccount').hidden=!email;
  return email;
 }
@@ -239,7 +264,7 @@ async function remoteRead(initial=false){
     }
    }
    state=result.state;syncRevision=result.revision;remoteFingerprint=result.fingerprint;syncLastAt=result.updatedAt||'';
-   try{if(cloudUserEmail)localStorage.setItem(STORE+'_selected_'+cloudUserEmail,selectedFileId);}catch{}
+   try{if(cloudUserEmail&&shouldRememberAccount())localStorage.setItem(STORE+'_selected_'+cloudUserEmail,selectedFileId);}catch{}
    syncReady=true;syncDirty=false;syncConflict=false;cache=null;cacheSig='';render();gateHide();
    $('view').style.pointerEvents='';$('quickAdd').disabled=false;
    markSync('Connected: '+cloudUserEmail+' ✓','good');
@@ -312,7 +337,7 @@ function chooseAccount(forceSelect=false){
    }
    const reauthSame=Boolean(selectedFileId)&&cloudUserEmail===nextEmail;
    cloudUserEmail=nextEmail;
-   if(nextEmail.includes('@')){try{localStorage.setItem(STORE+'_last_account',nextEmail);}catch{}}
+   if(nextEmail.includes('@')&&shouldRememberAccount()){try{localStorage.setItem(STORE+'_last_account',nextEmail);}catch{}}
    updateGoogleLoginButtons();
    $('gateAccount').textContent='Signed in: '+cloudUserEmail;
    $('chooseDataFile').disabled=false;
@@ -338,6 +363,20 @@ function startCloud(){
  gateShow(configured()?(remembered?'Welcome back. Continue as '+remembered+' to access your private Drive data.':'Choose a Google account to connect to the shared Drive file.'):'Setup required: edit config.js and host these files on an HTTPS website before connecting.');
  $('googleConnect').onclick=()=>chooseAccount(false);
  $('otherGoogleAccount').onclick=()=>chooseAccount(true);
+ $('rememberGoogle').onchange=e=>{
+   try{
+     localStorage.setItem(STORE+'_remember',e.target.checked?'yes':'no');
+     if(!e.target.checked){
+       const prev=localStorage.getItem(STORE+'_last_account');
+       localStorage.removeItem(STORE+'_last_account');
+       if(prev)localStorage.removeItem(STORE+'_selected_'+prev);
+     }else if(cloudUserEmail.includes('@')){
+       localStorage.setItem(STORE+'_last_account',cloudUserEmail);
+       if(selectedFileId)localStorage.setItem(STORE+'_selected_'+cloudUserEmail,selectedFileId);
+     }
+   }catch{}
+   updateGoogleLoginButtons();
+ };
  $('chooseDataFile').onclick=openPicker;
  $('retryDataFile').onclick=()=>{if(selectedFileId)remoteRead(true);else openPicker();};
  $('chooseNewFileTop').onclick=()=>{
@@ -756,5 +795,43 @@ document.addEventListener('pointerdown',startColumnResize);document.addEventList
  document.addEventListener('click',e=>{let n=e.target.closest('[data-tab]');if(n){tab=n.dataset.tab;render();return}n=e.target.closest('[data-act]');if(n)act(n.dataset.act,n)});
 document.addEventListener('input',e=>{if(e.target.id==='ruleSearch'&&$('ruleList'))$('ruleList').innerHTML=ruleTable();if(e.target.id==='txSearch'&&$('txList'))$('txList').innerHTML=txTable()});
 document.addEventListener('change',e=>{if(e.target.id==='dailyScope'){state.ui.dailyScope=e.target.value;save();render()}if(e.target.id==='monthSelect')changeMonth(e.target.value);if(e.target.id==='hidePast'){state.hidePast=e.target.checked;saveDisplay();if($('monthList'))$('monthList').innerHTML=monthTable()}if(e.target.id==='ruleFilter'&&$('ruleList'))$('ruleList').innerHTML=ruleTable();if(['txStatus','txMonth'].includes(e.target.id)&&$('txList'))$('txList').innerHTML=txTable();if(e.target.id==='importJson'){let file=e.target.files?.[0];if(!file)return;let reader=new FileReader();reader.onload=()=>{try{let d=JSON.parse(reader.result);d=normalizeState(d);if(confirm('Importing will replace ALL current tracker data. Continue?')){state=d;save();tab='dashboard';render()}}catch(err){alert('Backup could not be loaded: '+err.message)}};reader.readAsText(file)}});
-$('focusToggle').onclick=()=>{document.body.classList.toggle('wide-view');$('focusToggle').textContent=document.body.classList.contains('wide-view')?'⇤ Exit focus':'⤢ Focus';render()};$('backupTop').onclick=exportJson;$('quickAdd').onclick=()=>openTransaction();window.addEventListener('resize',()=>{if(tab==='dashboard')drawChart()});render();startCloud();
+
+/* Installability is separate from Google OAuth; no Google tokens or Drive responses are cached. */
+let pendingInstallPrompt=null;
+function installedApp(){
+ return Boolean((window.matchMedia&&matchMedia('(display-mode: standalone)').matches)||navigator.standalone===true);
+}
+function refreshInstallButtons(){
+ for(const id of ['installAppGate','installAppTop']){
+  const el=$(id);if(!el)continue;
+  el.hidden=installedApp();
+ }
+}
+function showInstallInstructions(){
+ const ua=navigator.userAgent||'',ios=/iPad|iPhone|iPod/.test(ua),android=/Android/i.test(ua);
+ const text=ios?'On iPhone or iPad: open this site in Safari, tap Share, then choose Add to Home Screen. In some browsers the option may be in the Share menu or the browser menu.'
+ :android?'On Android: open this site in Chrome or your browser, tap the three-dot menu, and choose Install app or Add to Home screen.'
+ :'On Windows, Mac, or Chromebook: in Chrome or Edge, look for the Install icon at the right of the address bar or open the browser menu and choose Install Finance Control Center. On Safari for Mac, use File → Add to Dock.';
+ $('installDialogGuide').textContent=text;
+ $('installHelpDialog').showModal();
+}
+async function installFinanceApp(){
+ if(installedApp()){return;}
+ if(pendingInstallPrompt){
+  const event=pendingInstallPrompt;pendingInstallPrompt=null;
+  try{await event.prompt();await event.userChoice;}catch(e){console.warn('Browser install prompt unavailable:',e);showInstallInstructions();}
+ }else{showInstallInstructions();}
+}
+function setupInstallExperience(){
+ $('installAppGate').onclick=installFinanceApp;
+ $('installAppTop').onclick=installFinanceApp;
+ $('installDialogClose').onclick=()=>$('installHelpDialog').close();
+ window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();pendingInstallPrompt=e;refreshInstallButtons();});
+ window.addEventListener('appinstalled',()=>{pendingInstallPrompt=null;refreshInstallButtons();});
+ refreshInstallButtons();
+ if('serviceWorker' in navigator&&location.protocol==='https:'){
+  window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(e=>console.warn('App install support unavailable:',e)));
+ }
+}
+$('focusToggle').onclick=()=>{document.body.classList.toggle('wide-view');$('focusToggle').textContent=document.body.classList.contains('wide-view')?'⇤ Exit focus':'⤢ Focus';render()};$('backupTop').onclick=exportJson;$('quickAdd').onclick=()=>openTransaction();window.addEventListener('resize',()=>{if(tab==='dashboard')drawChart()});setupInstallExperience();render();startCloud();
 </script></body></html>
