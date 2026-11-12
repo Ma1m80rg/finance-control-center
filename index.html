@@ -89,7 +89,7 @@ body.wide-view .ledger-shell{max-height:calc(100vh - 200px)}
 <script src="./config.js"></script>
 <script async defer src="https://accounts.google.com/gsi/client"></script>
 <script async defer src="https://apis.google.com/js/api.js"></script>
-<div id="cloudGate" class="auth-gate" role="dialog" aria-modal="true" aria-labelledby="gateHeading"><section class="auth-card"><h2 id="gateHeading">Connect Finance Control Center</h2><p>Choose a Google account that has <b>Editor</b> access to your shared finance data file. Choose the same JSON file on each computer or phone. Your data remains in your private Google Drive.</p><div id="gateStatus" class="auth-status" role="status">Ready to connect.</div><div id="gateAccount" style="margin-top:10px;font-weight:700"></div><div class="auth-actions"><button class="btn primary" id="googleConnect">1. Sign in / choose account</button><button class="btn" id="chooseDataFile" disabled>2. Choose shared JSON file</button><button class="btn" id="retryDataFile" hidden>Retry opening shared file</button></div><p class="auth-note"><b>First setup:</b> Upload <code>Finance_Control_Center_Data.json</code> into your private Google Drive Finances folder. Each authorized account must select that same file once through Google's file picker. Access is enforced by Google Drive sharing permissions.</p><p class="auth-note">If you previously used Apps Script, you can select its existing <code>Finance_Control_Center_Data.json</code> here instead of creating a second file. The JSON backup can also be imported after connecting.</p><p class="auth-note">The cloud app requires HTTPS hosting and the configured Google OAuth credentials. Opening this file directly from your computer or Google Drive preview does not enable sign-in.</p></section></div>
+<div id="cloudGate" class="auth-gate" role="dialog" aria-modal="true" aria-labelledby="gateHeading"><section class="auth-card"><h2 id="gateHeading">Connect Finance Control Center</h2><p>Choose a Google account that has <b>Editor</b> access to your shared finance data file. Choose the same JSON file on each computer or phone. Your data remains in your private Google Drive.</p><div id="gateStatus" class="auth-status" role="status">Ready to connect.</div><div id="gateAccount" style="margin-top:10px;font-weight:700"></div><div class="auth-actions"><button class="btn primary" id="googleConnect">1. Sign in / choose account</button><button class="btn" id="otherGoogleAccount" hidden>Use a different Google account</button><button class="btn" id="chooseDataFile" disabled>2. Choose shared JSON file</button><button class="btn" id="retryDataFile" hidden>Retry opening shared file</button></div><p class="auth-note"><b>First setup:</b> Upload <code>Finance_Control_Center_Data.json</code> into your private Google Drive Finances folder. Each authorized account must select that same file once through Google's file picker. Access is enforced by Google Drive sharing permissions.</p><p class="auth-note">If you previously used Apps Script, you can select its existing <code>Finance_Control_Center_Data.json</code> here instead of creating a second file. The JSON backup can also be imported after connecting.</p><p class="auth-note">The cloud app requires HTTPS hosting and the configured Google OAuth credentials. Opening this file directly from your computer or Google Drive preview does not enable sign-in.</p></section></div>
 <script>
 'use strict';
 const STORE='finance_control_center_drive_api_emergency_v2';
@@ -152,6 +152,13 @@ function gateMessage(message){$('gateStatus').textContent=message;}
 function configured(){return DC.clientId&&DC.clientId.endsWith('.apps.googleusercontent.com')&&DC.apiKey&&!DC.apiKey.startsWith('YOUR_')&&/^\d+$/.test(String(DC.projectNumber||''));}
 function gateShow(message){$gate.hidden=false;if(message)gateMessage(message);$('gateAccount').textContent=cloudUserEmail?'Signed in: '+cloudUserEmail:'';}
 function gateHide(){$gate.hidden=true;}
+function lastGoogleAccount(){try{return localStorage.getItem(STORE+'_last_account')||'';}catch{return '';}}
+function updateGoogleLoginButtons(){
+ const email=lastGoogleAccount();
+ $('googleConnect').textContent=email?'Continue as '+email:'1. Sign in / choose account';
+ $('otherGoogleAccount').hidden=!email;
+ return email;
+}
 function markLocalRisk(){try{if(selectedFileId)localStorage.setItem(STORE+'_'+selectedFileId,JSON.stringify({state,unsynced:true,at:new Date().toISOString()}));}catch(e){console.warn('Emergency local snapshot unavailable:',e)}}
 function markLocalSynced(){try{if(selectedFileId)localStorage.removeItem(STORE+'_'+selectedFileId);}catch{}}
 function save(){
@@ -286,9 +293,10 @@ function openPicker(){
   }catch(e){console.error(e);gateMessage('Picker error: '+e.message+' — check API key website restrictions, APIs, and project number.');}
  });
 }
-function chooseAccount(){
- // Re-authorization for the same account is allowed even with unsynced edits.
- gateShow('Choose the Google account that has access to your private finance folder.');
+function chooseAccount(forceSelect=false){
+ // Google requires a user gesture for each new Drive access token; a remembered hint avoids unnecessary account selection.
+ const last=forceSelect?'':lastGoogleAccount();
+ gateShow(last?'Reconnect securely as '+last+'. Google may briefly confirm your session.':'Choose the Google account that has access to your private finance folder.');
  if(!configured()){gateShow('SETUP REQUIRED: Edit config.js with your Google Cloud OAuth Web client ID, API key, and project number. Then host this site via HTTPS.');return;}
  if(!window.google?.accounts?.oauth2){gateShow('Google Identity Services is loading or blocked. Disable blocking extensions for accounts.google.com and retry.');return;}
  if(!googleClient){googleClient=google.accounts.oauth2.initTokenClient({client_id:DC.clientId,scope:DRIVE_SCOPE,callback:async response=>{
@@ -304,6 +312,8 @@ function chooseAccount(){
    }
    const reauthSame=Boolean(selectedFileId)&&cloudUserEmail===nextEmail;
    cloudUserEmail=nextEmail;
+   if(nextEmail.includes('@')){try{localStorage.setItem(STORE+'_last_account',nextEmail);}catch{}}
+   updateGoogleLoginButtons();
    $('gateAccount').textContent='Signed in: '+cloudUserEmail;
    $('chooseDataFile').disabled=false;
    if(reauthSame){gateHide();markSync('Reconnected: '+nextEmail,'good');if(syncDirty)queueSync();else remoteRead(false);}
@@ -317,14 +327,17 @@ function chooseAccount(){
  },error_callback:e=>{authBusy=false;gateMessage('Google sign-in popup problem: '+(e.type||'Unknown error')+'. Check popup blockers.');}});}
  if(authBusy)return;
  authBusy=true;
- // Explicit account selection avoids dependence on Chrome's default authuser value.
- googleClient.requestAccessToken({prompt:'select_account'});
+ // Remember the last authorized account locally; never store an OAuth token in browser storage.
+ // A dedicated account-switch button still forces Google's chooser when needed.
+ googleClient.requestAccessToken(last?{prompt:'',login_hint:last}:{prompt:'select_account'});
 }
 function startCloud(){
  markSync('Not signed in • Drive not connected','working');
  $('view').style.pointerEvents='none';$('quickAdd').disabled=true;
- gateShow(configured()?'Choose a Google account to connect to the shared Drive file.':'Setup required: edit config.js and host these files on an HTTPS website before connecting.');
- $('googleConnect').onclick=chooseAccount;
+ const remembered=updateGoogleLoginButtons();
+ gateShow(configured()?(remembered?'Welcome back. Continue as '+remembered+' to access your private Drive data.':'Choose a Google account to connect to the shared Drive file.'):'Setup required: edit config.js and host these files on an HTTPS website before connecting.');
+ $('googleConnect').onclick=()=>chooseAccount(false);
+ $('otherGoogleAccount').onclick=()=>chooseAccount(true);
  $('chooseDataFile').onclick=openPicker;
  $('retryDataFile').onclick=()=>{if(selectedFileId)remoteRead(true);else openPicker();};
  $('chooseNewFileTop').onclick=()=>{
@@ -334,11 +347,12 @@ function startCloud(){
  };
  $('switchGoogle').onclick=()=>{
   if(syncDirty||syncSending){alert('Download a JSON backup and finish saving before switching accounts.');return;}
-  if(googleToken&&window.google?.accounts?.oauth2){try{google.accounts.oauth2.revoke(googleToken);}catch{}}
+  // Switching users clears this page session without revoking the account's previously granted Google permissions.
   googleToken='';googleTokenExp=0;cloudUserEmail='';selectedFileId='';syncReady=false;
   sessionEpoch++;syncConflict=false;syncDirty=false;state=normalizeState(defaults());cache=null;cacheSig='';render();
   $('view').style.pointerEvents='none';$('quickAdd').disabled=true;$('chooseDataFile').disabled=true;
-  gateShow('Choose your Google account, then select the shared finance file.');
+  gateShow('Choose a different Google account to access the shared finance file.');
+  chooseAccount(true);
  };
  if(!syncPoll)syncPoll=setInterval(()=>{if(syncReady&&tokenValid()){
     if(syncDirty&&!syncConflict)queueSync();else remoteRead(false);
