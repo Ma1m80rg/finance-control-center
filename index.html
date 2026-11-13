@@ -29,6 +29,11 @@
 .posted-ledger .ledger-table .compact-control{background:#f0f2f5;color:#465c70;border-color:#cbd4dc}
 .posted-ledger .ledger-table .compact-control:focus{background:#fff;color:#172c40}
 .posted-ledger .ledger-table .btn.primary{background:#586d80;border-color:#586d80}
+.skipped-ledger{background:#f2f3f5}
+.skipped-ledger .ledger-table tr.skipped{opacity:1}
+.skipped-ledger .ledger-table td{background:#e9edf1;color:#647385}
+.skipped-ledger .ledger-table tr.skipped:hover td{background:#e1e7ed}
+.skipped-ledger .pay-type{filter:grayscale(1);opacity:.75}
 .ledger-today-marker{background:#e5f8f5!important;outline:2px solid #8ad6cd;outline-offset:-2px}
 .ledger-active-title{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .ledger-active-title .btn{padding:5px 9px;font-size:11px}.ledger-table tr.skipped{opacity:.68}.ledger-table .compact-control{width:100%;min-width:96px;max-width:180px;padding:8px 6px;border:1px solid #cbdde6;border-radius:7px;background:white;font-size:12px}.ledger-table .date-control{min-width:124px;max-width:140px}.ledger-table .amt-control{min-width:94px;max-width:112px;text-align:right}.ledger-table .account-control{min-width:160px;max-width:230px}.ledger-table .title-cell{min-width:185px;max-width:280px;white-space:normal}.ledger-table .balance-cell{min-width:140px;font-variant-numeric:tabular-nums;text-align:right}.ledger-table .money-cell{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}.ledger-table .pay-type{display:inline-block;font-size:10px;letter-spacing:.02em;font-weight:800;color:#47768b;background:#e8f1f6;border-radius:5px;padding:2px 6px;margin-top:3px}.ledger-table .pay-type.in{background:#dcf7e7;color:#167251}.ledger-table .pay-type.out{background:#fff0e8;color:#a4512a}.ledger-summary{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0}.ledger-summary .stat{flex:1;min-width:160px}.ledger-summary .stat strong{font-size:18px}.ledger-help{margin-bottom:10px}.ledger-note{font-size:11px;color:#536a7c;line-height:1.35;margin-top:4px}.ledger-error{color:#ad303a;font-weight:700}.sync-conflict{background:#fff0f0;border:1px solid #e9afb5;color:#7a2433;border-radius:10px;padding:13px;margin:10px 0}
@@ -578,7 +583,7 @@ function ledgerEntries(key){
  for(const t of state.transactions)if(t.date&&ym(t.date)===key){rows.push({kind:'tx',id:t.id,dueDate:t.date,source:t,eff:t,name:t.description||'One-time payment',scheduled:t.amount,actual:t.actualAmount??'',actualDate:t.actualDate||t.date,status:t.status||'Planned',from:t.from,to:t.to});}
  rows.sort((a,b)=>a.dueDate.localeCompare(b.dueDate)||a.name.localeCompare(b.name));return rows;
 }
-let postedLedgerExpanded=false,ledgerLastFocusedKey='';
+let postedLedgerExpanded=false,skippedLedgerExpanded=false,ledgerLastFocusedKey='';
 function focusLedgerToday(force=false){
  const holder=$('ledgerActiveScroll');if(!holder)return;
  const key=state.viewMonth+'|'+today();
@@ -593,7 +598,9 @@ function focusLedgerToday(force=false){
 }
 function ledgerPage(){
  let key=state.viewMonth,rows=ledgerEntries(key),days=dayRows(key),balances=Object.fromEntries(days.map(d=>[d.date,d]));
- const postedRows=rows.filter(x=>x.status==='Posted'),pendingRows=rows.filter(x=>x.status!=='Posted');
+ const postedRows=rows.filter(x=>x.status==='Posted');
+ const skippedRows=rows.filter(x=>x.status==='Skipped');
+ const pendingRows=rows.filter(x=>x.status!=='Posted'&&x.status!=='Skipped');
  let exp=0,posted=postedForMonth(key).exp,sched=0,inc=postedForMonth(key).inc;
  for(const x of rows){let type=eventType(x.eff.from,x.eff.to);if(x.status==='Posted'){}
    else if(!['Skipped','Cancelled'].includes(x.status)&&type==='expense')sched+=Number(x.scheduled);
@@ -619,19 +626,25 @@ function ledgerPage(){
    </tr>`;
  };
  const postedHtml=postedRows.map(renderLedgerRow).join('')||'<tr><td colspan="10" class="empty">No payments have been posted in this month.</td></tr>';
+ const skippedHtml=skippedRows.map(renderLedgerRow).join('')||'<tr><td colspan="10" class="empty">No payments have been skipped in this month.</td></tr>';
  const html=pendingRows.map(renderLedgerRow).join('')||'<tr><td colspan="10" class="empty">No outstanding entries for this month.</td></tr>';
  const ledgerHead='<tr><th>Scheduled</th><th>Payment / category</th><th>From</th><th>To</th><th class="money-cell">Estimate</th><th>Actual $</th><th>Actual date</th><th>Status</th><th class="balance-cell">Account balance</th><th>Update</th></tr>';
  return `${snapshotWarning()}<div class="panel"><div class="section-top"><h2>Monthly payment register — ${monthLabel(key)}</h2><div class="toolbar"><button class="btn small" data-act="prevMonth">◂ Previous</button>${monthPicker()}<button class="btn small" data-act="nextMonth">Next ▸</button><button class="btn small primary" data-act="addTransaction">＋ One-time</button><button class="btn small" data-act="addRule">＋ Recurring</button></div></div>
- <div class="note ledger-help"><b>Ledger accounts:</b> Use the From and To dropdowns to define money movement for each row. <b>External → AMEX</b> is a purchase that increases card debt and counts as an expense. <b>Checking → AMEX</b> is a payment that reduces card debt and checking cash, without counting as a second expense. Every scheduled payment has an estimate and editable <b>actual amount</b>. Choose both From and To accounts, enter the real date, select <b>Posted</b>, and click <b>Save</b>. If Actual is blank, it automatically uses the Estimate. Future recurring forecasts automatically replace that occurrence with the actual payment—never charge it twice. Use <b>Skipped</b> to cancel only one recurring occurrence. <b>To move a recurring bill from November to December and all future months, click Schedule and change First due date.</b> The Actual date field records when a payment really posted; it does not reschedule an unpaid bill. Posted historical payments stay in their original month. Each recurring occurrence can have different From and To accounts without changing the future recurring rule.</div>
+ <div class="note ledger-help"><b>Ledger accounts:</b> Use the From and To dropdowns to define money movement for each row. <b>External → AMEX</b> is a purchase that increases card debt and counts as an expense. <b>Checking → AMEX</b> is a payment that reduces card debt and checking cash, without counting as a second expense. Every scheduled payment has an estimate and editable <b>actual amount</b>. Choose both From and To accounts, enter the real date, select <b>Posted</b>, and click <b>Save</b>. If Actual is blank, it automatically uses the Estimate. Future recurring forecasts automatically replace that occurrence with the actual payment—never charge it twice. Use <b>Skipped</b> to omit only one recurring occurrence; it moves into the collapsed Skipped section and can be restored later. Future monthly occurrences are not changed. <b>To move a recurring bill from November to December and all future months, click Schedule and change First due date.</b> The Actual date field records when a payment really posted; it does not reschedule an unpaid bill. Posted historical payments stay in their original month. Each recurring occurrence can have different From and To accounts without changing the future recurring rule.</div>
  <div class="ledger-summary">${kpi('Scheduled estimates',money(exp),'All expense estimates this month')}${kpi('Actual paid',money(posted),'Posted expenses paid in this month')}${kpi('Remaining projected',money(sched),'Unpaid expense estimates')}${kpi('Actual income',money(inc),'Posted deposits in this month')}</div>
  <details id="postedLedgerGroup" class="posted-ledger" ${postedLedgerExpanded?'open':''}>
    <summary><strong>Posted (${postedRows.length})</strong><span class="posted-subtitle">Completed payments and deposits — ${money(posted)} in actual expenses • Expand to review or correct</span></summary>
    <div class="posted-toolbar">${tableControls('ledgerPosted')}</div>
    <div class="ledger-shell posted-shell compact-grid"><table data-table-id="ledgerPosted" class="ledger-table resizable"><thead>${ledgerHead}</thead><tbody>${postedHtml}</tbody></table></div>
  </details>
+ <details id="skippedLedgerGroup" class="posted-ledger skipped-ledger" ${skippedLedgerExpanded?'open':''}>
+   <summary><strong>Skipped (${skippedRows.length})</strong><span class="posted-subtitle">Skipped recurring payments — not included in this month's cash flow • Expand to restore or edit</span></summary>
+   <div class="posted-toolbar">${tableControls('ledgerSkipped')}</div>
+   <div class="ledger-shell posted-shell compact-grid"><table data-table-id="ledgerSkipped" class="ledger-table resizable"><thead>${ledgerHead}</thead><tbody>${skippedHtml}</tbody></table></div>
+ </details>
  <div class="section-top"><div class="ledger-active-title"><h2>Scheduled &amp; Other Payments (${pendingRows.length})</h2><button class="btn small" data-act="jumpLedgerToday" type="button">↓ Jump to today</button></div>${tableControls('ledger')}</div>
  <div id="ledgerActiveScroll" class="ledger-shell compact-grid"><table data-table-id="ledger" class="ledger-table resizable"><thead>${ledgerHead}</thead><tbody>${html}</tbody></table></div>
- <p class="foottext">${rows.length} entries total. Posted records are collapsed above but remain editable. Values update after you click Save. Account balance is the projected closing balance for the chosen account <b>at the end of that payment date</b> (not a statement-confirmed balance). Entries before the verified balance snapshot are already reflected in that snapshot and are not deducted again. Only use Posted for payments that truly cleared.</p>
+ <p class="foottext">${rows.length} entries total. Posted and Skipped records are collapsed above but remain editable. Values update after you click Save. Account balance is the projected closing balance for the chosen account <b>at the end of that payment date</b> (not a statement-confirmed balance). Entries before the verified balance snapshot are already reflected in that snapshot and are not deducted again. Only use Posted for payments that truly cleared.</p>
  </div>`;
 }
 function saveLedger(el){
@@ -749,6 +762,7 @@ const views={dashboard:['Dashboard','Accounts, cash flow and upcoming bills'],ac
 const DEFAULT_WIDTHS={
  ledger:[9,16,13,13,8,9,10,8,10,4],
  ledgerPosted:[9,16,13,13,8,9,10,8,10,4],
+ ledgerSkipped:[9,16,13,13,8,9,10,8,10,4],
  accounts:[38,16,24,22],
  rules:[8,17,17,11,9,9,8,7,8,6],
  daily:[]
@@ -866,7 +880,7 @@ function act(name,el){let id=el?.dataset.id;
  }}
 document.addEventListener('pointerdown',startColumnResize);document.addEventListener('pointermove',updateColumnResize);document.addEventListener('pointerup',endColumnResize);document.addEventListener('pointercancel',endColumnResize);
  document.addEventListener('dragstart',onNavigationDragStart);document.addEventListener('dragover',onNavigationDragOver);document.addEventListener('drop',onNavigationDrop);document.addEventListener('dragend',onNavigationDragEnd);
- document.addEventListener('toggle',e=>{if(e.target?.id==='postedLedgerGroup')postedLedgerExpanded=e.target.open;},true);
+ document.addEventListener('toggle',e=>{if(e.target?.id==='postedLedgerGroup')postedLedgerExpanded=e.target.open;else if(e.target?.id==='skippedLedgerGroup')skippedLedgerExpanded=e.target.open;},true);
  document.addEventListener('click',e=>{let n=e.target.closest('[data-tab]');if(n){tab=n.dataset.tab;render();return}n=e.target.closest('[data-act]');if(n)act(n.dataset.act,n)});
 document.addEventListener('input',e=>{if(e.target.id==='ruleSearch'&&$('ruleList'))$('ruleList').innerHTML=ruleTable();if(e.target.id==='txSearch'&&$('txList'))$('txList').innerHTML=txTable()});
 document.addEventListener('change',e=>{
